@@ -148,7 +148,6 @@ mergedClini <- mergedClini[,name_useful_mer_col]
 
 
 #### describe remaning variables
-
 nominalCols <- merge_use_cols$columns[which(merge_use_cols$type == "nominal")]
 cap1 <- "Patient characteristics: nominal variables. Merged firebrowse and cBio"
 write(tableNominal(vars = mergedClini[,nominalCols], cap = cap1, vertical = TRUE, lab = "tab: nominal1",
@@ -163,10 +162,11 @@ cap1 <- "Patient characteristics: continuous Merged firebrowse and cBio"
 write(tableContinuous(vars = numClini, cap = cap1, vertical = TRUE, lab = "tab: continuous2",
                       longtable = TRUE), file = "temp/1-1.2-ContinousVarsFinal.tex")
 
-##MOVE OUTPUT MANUALLY TO FILE!!!
+##TODO: MOVE OUTPUT MANUALLY TO FILE!!!
 
 ######## construct clinical tables -----
-
+merge_use_cols[15,c(2:4)]  <- c("no_useful","","")
+merge_use_cols[16,c(2:4)]  <- c("no_useful","","")
 tensorCols <- merge_use_cols$columns[which(merge_use_cols$for.tensor == "tensor")]
 tensorClinical <- mergedClini[,c("patient.bcr_patient_barcode", tensorCols)]
 save(tensorClinical, file="data/tensorClinical.RData")
@@ -179,31 +179,5 @@ treatCols <- merge_use_cols$columns[which(merge_use_cols$for.tensor == "treatmen
 treatClinical <- mergedClini[,c("patient.bcr_patient_barcode", treatCols)]
 save(treatClinical, file="data/treatClinical.RData")
 
-
-SearchInClinicalLong <- function(){
-
-  indexes <- grep(pattern = "immunohistochemistry", VariablesLong)
-  VariablesLong[indexes]
-  i=1151
-  #for (i in indexes){
-    print( VariablesLong[i] )
-    print( levels(clinicalLong[,i]) )
-    print(  unique(clinicalLong[,i]) )
-    #print( range(clinicalLong[,i]) )
-  #}
-
-
-
-  vars1 <- clinicalLong[,grep(pattern = "tumor", VariablesLong)]
-  cap1 <- "Patient characteristics: nominal variables."
-  tableNominal(vars = vars1, cap = cap1, vertical = TRUE, lab = "tab: nominal1",
-               longtable = TRUE)
-
-  #patient.immunohistochemistry_positive_cell_score
-
-}
-
 save.image(file = "temp/1-1.2.RData")
-
-########## more info ----------
-#this also looks coolhttps://cran.r-project.org/web/packages/Gmisc/vignettes/Descriptives.html
+#load(file = "temp/1-1.2.RData")

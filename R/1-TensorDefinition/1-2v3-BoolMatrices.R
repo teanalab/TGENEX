@@ -1,46 +1,12 @@
 # version 3 (5/20/2018)
-
-#1) patients with fewer than 10 mutations were discarded
+#1) patients with fewer than 10 mutations were discarded initially, but after trimming, remaining patients have three or more mutations
 #2) only important variables
 #3) using cBio data
-
 #4) using firebrowse and cBiolite data
 
-
-
-
-#################
-# >   length(genes)
-# [1] 11996
-# >   length(patients)
-# [1] 503
-# >   dim(boolMutation)
-# [1]   503 11996
-
-#original table with 29 variables
-#2 are ID variables
-#2 are cancer type = all bc
-#9 are clusters
-#3 vars are repeated:
-## "Tumor" and "Tumor..T1.Coded" are almost same
-## "Node" and "Node.coded" are almost the same
-## "Metastasis" and "Metastasis.Coded" are exactly the same
-#
-#14 remaining variables (Total included)
-# > names(NumVals)
-# [1] "Gender"             "AGE"                "ER.Status"          "PR.Status"
-# [5] "HER2.Final.Status"  "Tumor"              "Node"               "Metastasis"
-# [9] "AJCC.Stage"         "Converted.Stage"    "Survival.Data.Form" "OS_STATUS"
-# [13] "OS_MONTHS"          "PAM50.Subtype"
-#12 categorical
-#2 vars are continuous (Age and OS_Months)
-#dicotomized using  Sturges
-
-
 ######### start here ----
-
 rm(list = ls())
-#Data adjustment
+
 readFiles <- function(){
   dataFile <- "temp/1-2v3data.RData"
   #file.remove(dataFile)
@@ -49,7 +15,7 @@ readFiles <- function(){
   } else {
     load("data/tensorClinical.RData")
     clinical <- tensorClinical
-    mutation <-read.table(file="../../12Datasets/BRCA/brca4mCBioportal/data_mutations_extended.txt", sep = "\t", quote = "",
+    mutation <-read.table(file="data/brca4mCBioportal/data_mutations_extended.txt", sep = "\t", quote = "",
                            header = TRUE, stringsAsFactors = FALSE, skip = 1, skipNul = TRUE, blank.lines.skip = TRUE)
 
     #uuid = NO A GOOD IDENTIFIER
@@ -100,9 +66,7 @@ createBoolMutation <- function(){
     range(mut4patient)
 
     # 8
-    #
     # 5 = six patients
-    #
     # 2 no patients
     #NOTE: Patients to remove
     length(which(mut4patient<=10))
@@ -202,17 +166,15 @@ createBoolMutation <- function(){
   }
 }
 
-
 ######### start here ----
 readFiles()
 createBoolMutation()
 
 row.names(clinical) <- clinical$patient.bcr_patient_barcode
 clinical <- clinical[patients,]
-#DATASETS DESCRIPTION
+#DATASETS DIMENSIONS
 dim(clinical)
 dim(boolMutation)
-#number of patients
 length(patients)
 
 ###### source these functions ----
@@ -296,7 +258,7 @@ dichomoNotAvail <- function(columnId)
 #Dichomotization of columns with more than 2 categories
 dichoSeveralCols <-function(cols)
 {
-  dichoCols <- as.data.frame(clinical[, cols])
+  dichoCols <- as.data.frame(clinical[patients, cols])
   dichoCols <- lapply(dichoCols, factor)
 
   ##Recode categories to columns
@@ -304,7 +266,7 @@ dichoSeveralCols <-function(cols)
                           contrasts.arg = lapply(dichoCols, contrasts, contrasts=FALSE))
   matDich <- as.data.frame(matDich)
   matDich <- as.data.frame(lapply(matDich, as.logical))
-  row.names(matDich) <- row.names(clinical)
+  row.names(matDich) <- patients
   matDich
 }
 
@@ -313,7 +275,7 @@ dichoSeveralCols <-function(cols)
 classesSturges <- function(colId)
 {
   require(classInt)
-  aInt <- classIntervals(as.numeric(clinical[,colId]), style = "jenks")
+  aInt <- classIntervals(as.numeric(clinical[patients,colId]), style = "jenks")
   aCategory <- findCols(aInt)
 
   ##Recode categories to columns
@@ -337,35 +299,29 @@ classesSturges <- function(colId)
 createBoolClinical <-function(){
   #0- get only the patients that will be part of the analysis
   AllColsClinical <- clinical
+  #remove cols after meeting (5/25/2018)
+  clinical <- clinical[,c("patient.bcr_patient_barcode","patient.age_at_initial_pathologic_diagnosis",
+                          "patient.breast_carcinoma_estrogen_receptor_status", "patient.breast_carcinoma_progesterone_receptor_status",
+                          "patient.ethnicity", "patient.gender",
+                          "patient.histological_type", "HER2.Final.Status",
+                          "Tumor",
+                          "Node.Coded", "Metastasis.Coded",
+                          "Converted.Stage")]
+  #transform tumor to tumor.coded after meeting (5/25/2018)
+  Tumor.Coded <- clinical$Tumor
+  Tumor.Coded[which(Tumor.Coded != "T1")] <- "T_other"
+  Tumor.Coded -> clinical$Tumor
+  names(clinical) = c("patient.bcr_patient_barcode","patient.age_at_initial_pathologic_diagnosis",
+                      "patient.breast_carcinoma_estrogen_receptor_status", "patient.breast_carcinoma_progesterone_receptor_status",
+                      "patient.ethnicity", "patient.gender",
+                      "patient.histological_type", "HER2.Final.Status",
+                      "Tumor.Coded",
+                      "Node.Coded", "Metastasis.Coded",
+                      "Converted.Stage")
 
   NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
-  #NumVals
+  NumVals
 
-  #remove columns with only one value
-  #done manually with excel
-  # OnlyOneValsC <- which(NumVals==1)
-  # clinical <- clinical [, -OnlyOneValsC]
-
-  #remove columns with IDS
-  #done manually with excel
-  # OnlyOneValsC <- which(NumVals==503)
-  # clinical <- clinical [, -OnlyOneValsC]
-
-  #remove all cluter cols
-  #done manually with excel
-  # clustNIndex <- which(names(clinical) %in% clustersColsNames)
-  # clinical <- clinical [, -clustNIndex]
-
-
-  #"Tumor" and "Tumor..T1.Coded" are almost same
-  #"Node" and "Node.coded" are almost the same
-  #"Metastasis" and "Metastasis.Coded" are exactly the same
-  #done manually with excel
-  # clinical <- clinical [, -c(7,9,11)]
-
-  #Node and Node.Details should be merged (dependent)
-
-  #1- run analysis - Plots
   NumVals <- analyzeClinicVariables()
   NumVals
 
@@ -373,7 +329,7 @@ createBoolClinical <-function(){
   NumVals
 
   #2- get dichotomous columns
-  #3 levels columns-----------------
+  #3-level columns-----------------
   cols3 <- which(NumVals==3)  #patient.ethnicity
   #Node.Coded  Metastasis.Coded
 
@@ -388,9 +344,17 @@ createBoolClinical <-function(){
   #1 NA, got rid of patient
   Node.Coded = clinical[,"Node.Coded"]
   toDelete <- which(is.na(Node.Coded))
-  clinical <- clinical[-toDelete,]
-  patients <- patients[-toDelete]
-  boolMutation <- boolMutation[-toDelete,]
+
+  deletepatients <- function(toDelete){
+    if(length(toDelete) != 0)
+    {
+      clinical <- clinical[-toDelete,]
+      patients <- patients[-toDelete]
+      boolMutation <- boolMutation[-toDelete,]
+    }
+  }
+
+  deletepatients(toDelete)
   table(Node.Coded)
 
 
@@ -398,22 +362,26 @@ createBoolClinical <-function(){
   #1 NA, got rid of patient
   Metastasis.Coded = clinical[,"Metastasis.Coded"]
   toDelete <- which(is.na(Metastasis.Coded))
-  clinical <- clinical[-toDelete,]
-  patients <- patients[-toDelete]
-  boolMutation <- boolMutation[-toDelete,]
+  deletepatients(toDelete)
   table(Metastasis.Coded)
+
+
+  #Tumor.Coded
+  Tumor.Coded = clinical[,"Tumor.Coded"]
+  table(Tumor.Coded)
+
 
 
   NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
   NumVals
 
   #2 level columns -----------------
-  matDich2 <- dichoSeveralCols(which(NumVals==2))
+  matDich2 <- dichoSeveralCols(cols=which(NumVals==2))
   #View(matDich2)
   #delete redundant info, leave only one column
   #reduCols <- seq(1,(2*length(which(NumVals==2))),by=2)
   #select manually for true being higher risk
-  reduCols <- c(1,4,5,7,9)
+  reduCols <- c(2,4,5,7,9,11)
   matDich2 <- matDich2[,-reduCols]
 
   #4 level columns-----------------
@@ -425,17 +393,13 @@ createBoolClinical <-function(){
   table(clinical[,ncols[2]])
   # [3] "HER2.Final.Status"
   table(clinical[,ncols[3]])
-  # [4] "Node"
-  table(clinical[,ncols[4]])
 
 
   # [1] "patient.breast_carcinoma_estrogen_receptor_status"
   #5 NA, got rid of patients
   patient.breast_carcinoma_estrogen_receptor_status = clinical[,"patient.breast_carcinoma_estrogen_receptor_status"]
   toDelete <- which(is.na(patient.breast_carcinoma_estrogen_receptor_status))
-  clinical <- clinical[-toDelete,]
-  patients <- patients[-toDelete]
-  boolMutation <- boolMutation[-toDelete,]
+  deletepatients(toDelete)
   table(patient.breast_carcinoma_estrogen_receptor_status)
   #rename indeterminate to Equivocal
   patient.breast_carcinoma_estrogen_receptor_status = clinical[,"patient.breast_carcinoma_estrogen_receptor_status"]
@@ -452,9 +416,7 @@ createBoolClinical <-function(){
   #9 NA, got rid of patients
   HER2.Final.Status = clinical[,"HER2.Final.Status"]
   toDelete <- which(HER2.Final.Status == "Not Available")
-  clinical <- clinical[-toDelete,]
-  patients <- patients[-toDelete]
-  boolMutation <- boolMutation[-toDelete,]
+  deletepatients(toDelete)
   HER2.Final.Status = clinical[,"HER2.Final.Status"]
   table(HER2.Final.Status)
   #apply(clinical[,cols3], 2, unique)
@@ -463,26 +425,6 @@ createBoolClinical <-function(){
   NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
   matDich3 <- dichoSeveralCols(which(NumVals==3))
 
-  #Do like it has 4 levels
-  matDich4 <- dichoSeveralCols(which(NumVals==4))
-
-  ## OTHER --
-  #na to character
-  #clinical[which(is.na(clinical[,cols3])),cols3] = "NA"
-
-  #assing nice names
-  #names(matD3) <- c("Metastasis.M0", "Metastasis.M1")
-
-
-  #5 levels -----------------
-  NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
-  cols5 <- which(NumVals==5)
-  ncols <- names(cols5)
-  # [1] "Tumor"
-  table(clinical[,ncols[1]])
-
-  #Do like it has 5 levels
-  matDich5 <- dichoSeveralCols(ncols[1])
 
   #7 levels -----------------
   NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
@@ -496,9 +438,7 @@ createBoolClinical <-function(){
   #1 NA, got rid of patient
   patient.histological_type = clinical[,"patient.histological_type"]
   toDelete <- which(is.na(patient.histological_type))
-  clinical <- clinical[-toDelete,]
-  patients <- patients[-toDelete]
-  boolMutation <- boolMutation[-toDelete,]
+  deletepatients(toDelete)
   anyNA(clinical[,ncols[1]])
   names(table(clinical[,ncols[1]]))
 
@@ -516,79 +456,28 @@ createBoolClinical <-function(){
   #Do like it has N levels
   matDich8 <- dichoSeveralCols(ncols[1])
 
-  #13 levels -----------------
-  NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
-  colsN <- which(NumVals==13)
-  ncols <- names(colsN)
-  ncols
-  # [1] "patient.tissue_source_site"
-  names(table(clinical[,ncols[1]]))
-  anyNA(clinical[,ncols[1]])
-  # [2] "AJCC.Stage"
-  table(clinical[,ncols[2]])
-  anyNA(clinical[,ncols[2]])
-
-  # [2] "AJCC.Stage"
-  AJCC.Stage = clinical[,"AJCC.Stage"]
-  toDelete <- which(AJCC.Stage == "[Not Available]")
-  clinical <- clinical[-toDelete,]
-  patients <- patients[-toDelete]
-  boolMutation <- boolMutation[-toDelete,]
-  AJCC.Stage = clinical[,"AJCC.Stage"]
-  table(AJCC.Stage)
-  #apply(clinical[,cols3], 2, unique)
-
-  #Do like it has N levels
-  NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
-  colsN <- which(NumVals==12)
-  ncols <- names(colsN)
-  matDich12 <- dichoSeveralCols(ncols[1])
-
-  #Do like it has N levels
-  NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
-  colsN <- which(NumVals==13)
-  ncols <- names(colsN)
-  matDich13 <- dichoSeveralCols(ncols[1])
-
-
-
-
-  ## OTHER --
-  #na to character
-  #clinical[which(is.na(clinical[,cols3])),cols3] = "NA"
-
-  #assing nice names
-  #names(matD3) <- c("Metastasis.M0", "Metastasis.M1")
-
-
   ### CONCATENATE ALL nominal
   matDich2 <- matDich2[patients,]
   matDich3 <- matDich3[patients,]
-  matDich4 <- matDich4[patients,]
-  matDich5 <- matDich5[patients,]
   matDich6 <- matDich6[patients,]
   matDich8 <- matDich8[patients,]
-  matDich12 <- matDich12[patients,]
-  matDich13 <- matDich13[patients,]
 
-  conc1 <- cbind(matDich2, matDich3, matDich4, matDich5, matDich6,
-                 matDich8, matDich12, matDich13)
+  conc1 <- cbind(matDich2, matDich3, matDich6,
+                 matDich8)
 
   #5- add other columns, one by one --------
 
   #using Sturges
   ##2	Diagnosis.Age
   C <- "patient.age_at_initial_pathologic_diagnosis"
-  aCOl <- as.numeric(clinical[,C])
+  aCOl <- as.numeric(clinical[patients,C])
   range(aCOl)
   aMat <- classesSturges(C)
-  View(aMat)
 
   #to Logical
   aMati <- as.data.frame(lapply(aMat, as.logical))
   names(aMati) <- names(aMat)
-  row.names(aMati) <- row.names(clinical)
-
+  row.names(aMati) <- patients
 
   aMati <- aMati[patients, ]
 
@@ -599,7 +488,6 @@ createBoolClinical <-function(){
   row.names(boolClinical) <- row.names(clinical)
 
   # plots ##########
-
 
   #description boolean table
   clinicalColunms <- names(boolClinical)
@@ -630,7 +518,7 @@ createBoolClinical <-function(){
 
   #NOTE: Clinical to remove zero patients with the variable
   length(which(pat4cli<=0))
-  boolClinical <- boolClinical[,-which(pat4cli<=0)]
+  #boolClinical <- boolClinical[,-which(pat4cli<=0)]
 
   #NOTE: Clinical to remove all patients with the variable
   #length(which(pat4cli==dim(boolClinical)[1]))
@@ -647,6 +535,7 @@ createBoolClinical <-function(){
        xlab = "clinical variable", breaks = 40)
   dev.off()
 
+  # save ##########
   save(boolClinical,file= "data/boolClinical.RData")
 }
 
@@ -659,16 +548,13 @@ save(boolMutation,patients, file="data/boolMutation.RData")
 #load(file= "data/boolClinical.RData")
 #load(file="data/boolMutation.RData")
 
-write.csv2(boolClinical, file = "temp/10-boolC.csv",row.names = FALSE)
-write.csv2(boolMutation, file = "temp/10-boolM.csv",row.names = FALSE)
+#write.csv2(boolClinical, file = "temp/10-boolC.csv",row.names = FALSE)
+#write.csv2(boolMutation, file = "temp/10-boolM.csv",row.names = FALSE)
 
 binaClinical <- as.data.frame(lapply(boolClinical, as.numeric), stringsAsFactors = FALSE)
 binaMutation <- as.data.frame(lapply(boolMutation, as.numeric), stringsAsFactors = FALSE)
-write.csv2(binaClinical, file = "temp/10-binaC.csv",row.names = FALSE,
-           col.names = FALSE)
+write.csv2(binaClinical, file = "temp/10-binaC.csv",row.names = FALSE)
 write.csv2(t(binaMutation), file = "temp/10-binaM.csv",row.names = FALSE)
-
-
 
 save.image("temp/1-2v3.RData")
 # load("temp/10-BoolMatrices_v2.RData")
