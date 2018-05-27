@@ -40,9 +40,8 @@ WithRandomAsBaseline <- function(){
     geom_point(size=5) +
     # Remove title for all legends
     theme(legend.title=element_blank())
-
-g1
-  ##Export PDF 700 x 380  for paper as Figure7.png
+  g1
+  ##Export png 700 x 380  for paper as Figure7.png
   #Export PDF 8 x 5 inches for email
 }
 
