@@ -556,5 +556,7 @@ binaMutation <- as.data.frame(lapply(boolMutation, as.numeric), stringsAsFactors
 write.csv2(binaClinical, file = "temp/10-binaC.csv",row.names = FALSE)
 write.csv2(t(binaMutation), file = "temp/10-binaM.csv",row.names = FALSE)
 
+save(patients,file="data/patients.RData")
+
 save.image("temp/1-2v3.RData")
 # load("temp/10-BoolMatrices_v2.RData")
