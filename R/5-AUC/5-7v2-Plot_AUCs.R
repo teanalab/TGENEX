@@ -1,50 +1,39 @@
-#version 1 (4/1/2018)
-# Plot 2 AUCs comparisons
-
-# If I show AUC SH I can show how inestable NMF is and how it depends of k
+# version 2 (5/27/2018)
+# Plot AUCs comparisons
 
 rm(list = ls())
-load("temp/107-data.RData")
+load("temp/5-7-data.RData")
 loadlib("ggplot2")
 
 #Get all needed data
 LoadMyData <- function()
 {
-  load(file="temp/5-1-AUC-random.RData")
-  load(file="temp/103-AUC-NTF.RData")
-  load(file="temp/104-AUC-NMF.RData")
-  load(file="temp/105-NMF_lasso.RData")
-  load(file="temp/106-NTF_lasso.RData")
-
-  rm(list=ls()[-which(ls() %in% c("AUC_CD_all", "AUCvsK_103_NTF", "AUCvsK_104_NMF", "AUCvsK_105_NMF", "AUCvsK_106_NTF"))])
-
-  load(file="temp/AUCvsK_104_NMF_clini.RData")
+  load(file="output4paper/randomAUC.RData")
+  load(file="output4paper/NTF_AUC.RData")
+  load(file="output4paper/NMF_PxC_AUC.RData")
+  load(file="output4paper/NMF_PxM_AUC.RData")
 
   libs<-c("Packages.R")
-  libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/de2ecbae950d5d4b8cb1d7ba7bde5301c34186c2/", libs,sep='')
+  libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", libs,sep='')
   sapply(libs, function(u) {source(u)})
-
   loadlib("ggplot2")
 
-
-  save.image(file="temp/107-data.RData")
+  save.image(file="temp/5-7-data.RData")
 }
 
 
 WithRandomAsBaseline <- function(){
-
-  AUCvsK_103_NTF$method = "M2"
-  AUCvsK_104_NMF$method = "M1"
-  AUCvsK_104_NMF_clini$method = "M3"
+  AUCvsK_103_NTF = data.frame(k=c(1:10), auc= NTF_AUC, method = "M1")
+  AUCvsK_104_NMF = data.frame(k=c(1:10), auc= NMF_PxM_AUC, method = "M2")
+  AUCvsK_104_NMF_clini = data.frame(k=c(1:10), auc= NMF_PxC_AUC, method = "M3")
+  randomAUC = data.frame(k=c(1:10), auc= randomAUC, method = "M4")
 
   #Only first points
-  data10 <- rbind(AUCvsK_103_NTF[2:10,],AUCvsK_104_NMF[2:10,], AUCvsK_104_NMF_clini[2:10,])
-  data10 = data10[,-3]  #remove the third column
-  data10 <- rbind(data10, data.frame(k=seq(2,10), auc_CD=AUC_CD_all[2:10], method="M4") )
+  data10 <- rbind(AUCvsK_103_NTF[2:10,],AUCvsK_104_NMF[2:10,], AUCvsK_104_NMF_clini[2:10,], randomAUC[2:10,])
 
   #With clinical data
   theme_set(theme_light(base_size = 18))
-  g1 <- ggplot(data10, aes(x=k, y=auc_CD, colour=method, shape=method, fill=method)) +
+  g1 <- ggplot(data10, aes(x=k, y=auc, colour=method, shape=method, fill=method)) +
     geom_line(linetype="dashed") +
     xlab("# of most prevalent subtypes") +
     ylab("AUC") +
@@ -53,8 +42,6 @@ WithRandomAsBaseline <- function(){
     theme(legend.title=element_blank())
 
 g1
-
-
   ##Export PDF 700 x 380  for paper as Figure7.png
   #Export PDF 8 x 5 inches for email
 }
@@ -64,8 +51,8 @@ g1
 #not included because the clinical data model is not including all the variables
 FourLinesClinicalCoxAsBaseline <- function(){
 
-  AUCvsK_103_NTF$method = "M2"
-  AUCvsK_104_NMF$method = "M1"
+  AUCvsK_103_NTF$method = "M1"
+  AUCvsK_104_NMF$method = "M2"
   AUCvsK_104_NMF_clini$method = "M3"
 
   #Only first points

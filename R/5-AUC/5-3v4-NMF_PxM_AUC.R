@@ -1,5 +1,5 @@
 # version 4 (May/26/2018)
-# AUC comparing NTF. macro-average
+# AUC comparing NMF. macro-average
 # normalize rows of patien Factor
 # 80-20
 
@@ -8,10 +8,10 @@ load(file="temp/5-3v4-data.RData")
 loadls("plyr survival Rcpp missForest survAUC perry",F)
 
 LoadMyData <- function(){
-  load(file="data/factors.RData")
+  load(file="data/NMF_PxM.RData")
   load("data/survivalClinical-5-1.RData")
 
-  rm(list=ls()[-which(ls() %in% c("patientsF","survivalClinical","weightsC",
+  rm(list=ls()[-which(ls() %in% c("patientNMF_PxM","survivalClinical",
                                   "patients","kMax", "numberOfPatiens"))])
 
   #load my libraries
@@ -24,19 +24,17 @@ LoadMyData <- function(){
   save.image(file="temp/5-3v4-data.RData")
 }
 
-
-NTF_AUC <- function()
+#line by line
+NMF_PxM_AUC <- function()
 {
   numSplits = 10
   AUC_CD_all <- rep(0,kMax)
 
 
   #normalize rows
-  patiF <- t(apply(patientsF,1,function(x){x/sum(x)}))
+  patiF <- data.frame( t(apply(patientNMF_PxM,1,function(x){x/sum(x)})) )
+  names(patiF) <- paste('V',seq(1:10),sep='')
   patiF <- cbind.data.frame(patiF,survivalClinical)
-
-  weightsComp <- data.frame(namesC = paste('V',seq(1:10),sep=''), weight = weightsC[1:10])
-  weightsComp[order(weightsComp$weight,decreasing = T),]
 
   for (k in seq(2,kMax)){
     AUC_CD_K <- rep(0,numSplits)
@@ -79,8 +77,8 @@ NTF_AUC <- function()
   }
   AUC_CD_all
 
-  NTF_AUC <- AUC_CD_all
-  save(NTF_AUC, file = "output4paper/NTF_AUC.RData")
+  NMF_PxM_AUC <- AUC_CD_all
+  save(NMF_PxM_AUC, file = "output4paper/NMF_PxM_AUC.RData")
 }
 
 sess <- sessionInfo() #save session on variable
