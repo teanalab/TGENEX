@@ -8,8 +8,10 @@ load(file="temp/5-3v4-data.RData")
 loadls("plyr survival Rcpp missForest survAUC perry",F)
 
 LoadMyData <- function(){
-  load(file="data/NMF_PxM.RData")
-  load("data/survivalClinical-5-1.RData")
+  #load(file="data/NMF_PxM.RData")
+  load(file="data/NMF_30_PxM.RData")
+  #load("data/survivalClinical-5-1.RData")
+  load("data/survivalClinical-5-1_30.RData")
 
   rm(list=ls()[-which(ls() %in% c("patientNMF_PxM","survivalClinical",
                                   "patients","kMax", "numberOfPatiens"))])
@@ -49,12 +51,12 @@ NMF_PxM_AUC <- function()
 
     for (i in seq(1,numSplits)) {
       test_ind <- obsInTest[[4]][,i]
-      train <- patiF[-test_ind, ]
-      test <- patiF[test_ind, ]
+      train <- patiF[-test_ind,c(kMax-k:kMax,kMax+1,kMax+2)]
+      test <- patiF[test_ind,c(kMax-k:kMax,kMax+1,kMax+2)]
 
       #cox proportional hazard model
       coxFit <- coxph(Surv(time = Overall.Survival..Months.,
-                           event = Overall.Survival.Status)~V1+V2+V3+V4+V5+V6+V7+V8+V9+V10,
+                           event = Overall.Survival.Status)~.,
                       x=TRUE, y=TRUE, data=train)
 
       #AUC

@@ -4,8 +4,9 @@
 # the sum of components per each patient should sum to 1
 
 rm(list = ls())
-load(file="data/survivalClinical-5-1.RData")
-loadls("plyr survival Rcpp missForest survAUC perry",T)
+#load(file="data/survivalClinical-5-1.RData")
+load(file="data/survivalClinical-5-1_30.RData")
+loadls("plyr survival Rcpp missForest survAUC perry",F)
 
 LoadMyData <- function(){
   #load my libraries
@@ -26,17 +27,17 @@ LoadMyData <- function(){
 
   survivalClinical <-  survivalClinical[which(survivalClinical$Patient.ID %in% patients),]
   numberOfPatiens <- dim(survivalClinical)[[1]]
-  kMax <- 10
+  kMax <- 30
   row.names(survivalClinical) <- survivalClinical$Patient.ID
-
-  save.image(file="data/survivalClinical-5-1.RData")
+  survivalClinical <- survivalClinical[,c("Overall.Survival.Status","Overall.Survival..Months.")]
+  save.image(file="data/survivalClinical-5-1_30.RData")
 }
 
 #source
 randomPatientFactorMatrix <- function(){
   randPatfm <- matrix(0,numberOfPatiens,kMax)
   for (i in seq(numberOfPatiens)){
-    newRow <- runif(10)
+    newRow <- runif(kMax)
     newRow <- newRow/sum(newRow)
     randPatfm[i,] <- newRow
   }
@@ -47,15 +48,15 @@ randomPatientFactorMatrix <- function(){
 randomAUCs <- function()
 {
   AUC_CD_allK <- rep(0,kMax)
-  numSplits = 10
+  nRepeats = 10
   percenTesting = 0.2
   numCrossval = 5
-
 
   set.seed(100)
   #random factor
   randPatfm <-randomPatientFactorMatrix()
   randPatfm <- cbind.data.frame(randPatfm,survivalClinical)
+
 
   for (k in seq(2,kMax)){
     AUC_CD_K <- rep(0,nRepeats)
@@ -83,12 +84,12 @@ randomAUCs <- function()
     for (i in seq(1,nRepeats)) {
       set.seed(i)
       test_ind <- obsInTest[[4]][,i]
-      train <- randPatfm[-test_ind, ]
-      test <- randPatfm[test_ind, ]
+      train <- randPatfm[-test_ind,c(1:k,kMax+1,kMax+2)]
+      test <- randPatfm[test_ind,c(1:k,kMax+1,kMax+2)]
 
       #cox proportional hazard model
       coxFit <- coxph(Surv(time = Overall.Survival..Months.,
-                           event = Overall.Survival.Status)~V1+V2+V3+V4+V5+V6+V7+V8+V9+V10,
+                           event = Overall.Survival.Status)~.,
                       model=TRUE, data=train)
 
       #AUC
@@ -105,7 +106,6 @@ randomAUCs <- function()
       #plot(AUC_CD, main = paste("CD", AUC_CD$iauc))
       AUC_CD_K[i] <- AUC_CD$iauc
     }
-    #macro-average
     AUC_CD_allK[k] = mean(AUC_CD_K)
   }
 

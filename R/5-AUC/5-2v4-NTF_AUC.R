@@ -9,7 +9,9 @@ loadls("plyr survival Rcpp survAUC perry",F)
 
 LoadMyData <- function(){
   load(file="data/factors.RData")
-  load("data/survivalClinical-5-1.RData")
+  load("data/survivalClinical-5-1_30.RData")
+  # load(file="data/R_10/factors.RData")
+  # load("data/R_10/survivalClinical-5-1_.RData")
 
   rm(list=ls()[-which(ls() %in% c("patientsF","survivalClinical","weightsC",
                                   "patients","kMax", "numberOfPatiens"))])
@@ -25,22 +27,29 @@ LoadMyData <- function(){
   save.image(file="temp/5-2v4-data.RData")
 }
 
-
-NTF_AUC <- function()
-{
-  numSplits = 10
-  AUC_CD_all <- rep(0,kMax)
-
-  weightsComp <- data.frame(namesC = paste('V',seq(1:kMax),sep=''), weight =t(weightsC) )
+#source
+ntfPatientFactorMatrix <- function(){
+  weightsComp <- data.frame(namesC = paste('V',seq(1:kMax),sep=''),
+                            weight=weightsC[1,] )
   weightsComp[order(weightsComp$weight,decreasing = T),]
-
   patiF <- patientsF
   for (i in seq_along(weightsC)) {
     patiF[,i] <- patiF[,i]*weightsC[i]
   }
   #normalize rows
   patiF <- t(apply(patiF,1,function(x){x/sum(x)}))
-  patiF <- cbind.data.frame(patiF,survivalClinical)
+  patiF
+}
+
+NTF_AUC <- function()
+{
+  numSplits = 10
+  AUC_CD_all <- rep(0,kMax)
+
+  patiF <- ntfPatientFactorMatrix()
+  patiF <- merge(as.data.frame(patiF), as.data.frame(survivalClinical), by='row.names', all=TRUE)
+  patiF <- patiF[,-1]
+
 
   for (k in seq(2,kMax)){
     AUC_CD_K <- rep(0,numSplits)
@@ -54,13 +63,13 @@ NTF_AUC <- function()
     obsInTest <- perrySplits(numberOfPatiens, splitControl(m = smp_size, R = numSplits))
 
     for (i in seq(1,numSplits)) {
-      test_ind <- obsInTest[[4]][,i]
-      train <- patiF[-test_ind, ]
-      test <- patiF[test_ind, ]
+      test_ind <- obsInTest$subsets[,i]
+      train <- patiF[-test_ind,c(kMax-k:kMax,kMax+1,kMax+2)]
+      test <- patiF[test_ind,c(kMax-k:kMax,kMax+1,kMax+2)]
 
       #cox proportional hazard model
       coxFit <- coxph(Surv(time = Overall.Survival..Months.,
-                           event = Overall.Survival.Status)~V1+V2+V3+V4+V5+V6+V7+V8+V9+V10,
+                           event = Overall.Survival.Status)~.,
                       x=TRUE, y=TRUE, data=train)
 
       #AUC
@@ -78,7 +87,6 @@ NTF_AUC <- function()
       AUC_CD_K[i] <- AUC_CD$iauc
     }
 
-    #macro-average
     AUC_CD_all[k] = mean(AUC_CD_K)
   }
   AUC_CD_all

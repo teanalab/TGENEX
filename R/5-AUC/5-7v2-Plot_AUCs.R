@@ -2,10 +2,7 @@
 # Plot AUCs comparisons
 
 rm(list = ls())
-load("temp/5-7-data.RData")
-loadlib("ggplot2")
 
-#Get all needed data
 LoadMyData <- function()
 {
   load(file="output4paper/randomAUC.RData")
@@ -16,20 +13,44 @@ LoadMyData <- function()
   libs<-c("Packages.R")
   libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", libs,sep='')
   sapply(libs, function(u) {source(u)})
-  loadlib("ggplot2")
+  loadlib("ggplot2",F)
 
-  save.image(file="temp/5-7-data.RData")
+  kMax=10
+  k=c(2:kMax)
+
+  AUCvsK_103_NTF = data.frame(k, auc= NTF_AUC[k], method = "M1")
+  AUCvsK_104_NMF = data.frame(k, auc= NMF_PxM_AUC[k], method = "M2")
+  AUCvsK_104_NMF_clini = data.frame(k, auc= NMF_PxC_AUC[k], method = "M3")
+  randomAUC_ = data.frame(k, auc= randomAUC[k], method = "M4")
+}
+
+LoadDataFrom5_6 <- function()
+{
+  load(file="output4paper/All-AUC.RData")
+
+  libs<-c("Packages.R")
+  libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", libs,sep='')
+  sapply(libs, function(u) {source(u)})
+  loadlib("ggplot2",F)
+
+  kMax = 20
+
+  NTF_AUC = unlist(lapply(AUC_CD_allK_NTF, mean))[-1]
+  randomAUC = unlist(lapply(AUC_CD_allK_Random, mean))[-1]
+
+  AUCvsK_103_NTF = data.frame(k=c(2:kMax), auc= NTF_AUC, method = "M1")
+  AUCvsK_104_NMF = data.frame(k=c(2:kMax), auc= 0.66, method = "M2")
+  AUCvsK_104_NMF_clini = data.frame(k=c(2:kMax), auc= 0.66, method = "M3")
+  randomAUC = data.frame(k=c(2:kMax), auc= randomAUC, method = "M4")
+
 }
 
 
-WithRandomAsBaseline <- function(){
-  AUCvsK_103_NTF = data.frame(k=c(1:10), auc= NTF_AUC, method = "M1")
-  AUCvsK_104_NMF = data.frame(k=c(1:10), auc= NMF_PxM_AUC, method = "M2")
-  AUCvsK_104_NMF_clini = data.frame(k=c(1:10), auc= NMF_PxC_AUC, method = "M3")
-  randomAUC = data.frame(k=c(1:10), auc= randomAUC, method = "M4")
 
-  #Only first points
-  data10 <- rbind(AUCvsK_103_NTF[2:10,],AUCvsK_104_NMF[2:10,], AUCvsK_104_NMF_clini[2:10,], randomAUC[2:10,])
+
+WithRandomAsBaseline <- function(){
+
+  data10 <- rbind(AUCvsK_103_NTF,AUCvsK_104_NMF, AUCvsK_104_NMF_clini, randomAUC_)
 
   #With clinical data
   theme_set(theme_light(base_size = 18))
