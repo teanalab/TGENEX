@@ -35,6 +35,9 @@ NTF_AUC <- function()
   patiF <- t(apply(patientsF,1,function(x){x/sum(x)}))
   patiF <- cbind.data.frame(patiF,survivalClinical)
 
+  weightsComp <- data.frame(namesC = paste('V',seq(1:10),sep=''), weight = weightsC[1:10])
+  weightsComp[order(weightsComp$weight,decreasing = T),]
+
   for (k in seq(2,kMax)){
     AUC_CD_K <- rep(0,numSplits)
 
@@ -78,7 +81,6 @@ NTF_AUC <- function()
 
   NTF_AUC <- AUC_CD_all
   save(NTF_AUC, file = "output4paper/NTF_AUC.RData")
-
 }
 
 sess <- sessionInfo() #save session on variable
