@@ -5,7 +5,7 @@
 
 rm(list = ls())
 load(file="data/survivalClinical-5-1.RData")
-loadls("plyr survival Rcpp missForest survAUC perry",FALSE)
+loadls("plyr survival Rcpp missForest survAUC perry",T)
 
 LoadMyData <- function(){
   #load my libraries
@@ -47,7 +47,9 @@ randomPatientFactorMatrix <- function(){
 randomAUCs <- function()
 {
   AUC_CD_allK <- rep(0,kMax)
-  nRepeats = 10
+  numSplits = 10
+  percenTesting = 0.2
+  numCrossval = 5
 
 
   set.seed(100)
@@ -87,7 +89,7 @@ randomAUCs <- function()
       #cox proportional hazard model
       coxFit <- coxph(Surv(time = Overall.Survival..Months.,
                            event = Overall.Survival.Status)~V1+V2+V3+V4+V5+V6+V7+V8+V9+V10,
-                      x=TRUE, y=TRUE, data=train)
+                      model=TRUE, data=train)
 
       #AUC
       lp <- predict(coxFit)

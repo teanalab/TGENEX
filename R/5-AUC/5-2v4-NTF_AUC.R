@@ -5,7 +5,7 @@
 
 rm(list = ls())
 load(file="temp/5-2v4-data.RData")
-loadls("plyr survival Rcpp missForest survAUC perry",F)
+loadls("plyr survival Rcpp survAUC perry",F)
 
 LoadMyData <- function(){
   load(file="data/factors.RData")
@@ -19,7 +19,8 @@ LoadMyData <- function(){
   libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/de2ecbae950d5d4b8cb1d7ba7bde5301c34186c2/", libs,sep='')
   sapply(libs, function(u) {source(u)})
   #required for the cox proportional hazard model
-  loadls("plyr survival Rcpp missForest survAUC perry",FALSE)
+  #missForest
+  loadls("plyr survival Rcpp survAUC perry",F)
 
   save.image(file="temp/5-2v4-data.RData")
 }
@@ -30,13 +31,16 @@ NTF_AUC <- function()
   numSplits = 10
   AUC_CD_all <- rep(0,kMax)
 
-
-  #normalize rows
-  patiF <- t(apply(patientsF,1,function(x){x/sum(x)}))
-  patiF <- cbind.data.frame(patiF,survivalClinical)
-
-  weightsComp <- data.frame(namesC = paste('V',seq(1:10),sep=''), weight = weightsC[1:10])
+  weightsComp <- data.frame(namesC = paste('V',seq(1:kMax),sep=''), weight =t(weightsC) )
   weightsComp[order(weightsComp$weight,decreasing = T),]
+
+  patiF <- patientsF
+  for (i in seq_along(weightsC)) {
+    patiF[,i] <- patiF[,i]*weightsC[i]
+  }
+  #normalize rows
+  patiF <- t(apply(patiF,1,function(x){x/sum(x)}))
+  patiF <- cbind.data.frame(patiF,survivalClinical)
 
   for (k in seq(2,kMax)){
     AUC_CD_K <- rep(0,numSplits)
