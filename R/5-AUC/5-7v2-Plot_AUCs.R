@@ -15,41 +15,28 @@ LoadMyData <- function()
   sapply(libs, function(u) {source(u)})
   loadlib("ggplot2",F)
 
-  kMax=10
-  k=c(2:kMax)
+  kMax=20
 
-  AUCvsK_103_NTF = data.frame(k, auc= NTF_AUC[k], method = "M1")
-  AUCvsK_104_NMF = data.frame(k, auc= NMF_PxM_AUC[k], method = "M2")
-  AUCvsK_104_NMF_clini = data.frame(k, auc= NMF_PxC_AUC[k], method = "M3")
-  randomAUC_ = data.frame(k, auc= randomAUC[k], method = "M4")
+  AUCvsK_103_NTF = data.frame(k=c(2:kMax), auc= NTF_AUC[kMax:2], method = "M1")
+  AUCvsK_104_NMF = data.frame(k=c(2:kMax), auc= NMF_PxM_AUC[2:kMax], method = "M2")
+  AUCvsK_104_NMF_clini = data.frame(k=c(2:kMax), auc= NMF_PxC_AUC[2:kMax], method = "M3")
+  randomAUC_ = data.frame(k=c(2:kMax), auc= randomAUC[2:kMax], method = "M4")
 }
 
 LoadDataFrom5_6 <- function()
 {
   load(file="output4paper/All-AUC.RData")
-
   libs<-c("Packages.R")
   libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", libs,sep='')
   sapply(libs, function(u) {source(u)})
   loadlib("ggplot2",F)
-
   kMax = 20
-
-  NTF_AUC = unlist(lapply(AUC_CD_allK_NTF, mean))[-1]
-  randomAUC = unlist(lapply(AUC_CD_allK_Random, mean))[-1]
-
-  AUCvsK_103_NTF = data.frame(k=c(2:kMax), auc= NTF_AUC, method = "M1")
-  AUCvsK_104_NMF = data.frame(k=c(2:kMax), auc= 0.66, method = "M2")
-  AUCvsK_104_NMF_clini = data.frame(k=c(2:kMax), auc= 0.66, method = "M3")
-  randomAUC = data.frame(k=c(2:kMax), auc= randomAUC, method = "M4")
-
+  AUCvsK_103_NTF = data.frame(k=c(2:kMax), auc= NTF_AUC[kMax:2], method = "M1")
+  randomAUC_ = data.frame(k=c(2:kMax), auc= randomAUC[2:kMax], method = "M4")
 }
 
 
-
-
 WithRandomAsBaseline <- function(){
-
   data10 <- rbind(AUCvsK_103_NTF,AUCvsK_104_NMF, AUCvsK_104_NMF_clini, randomAUC_)
 
   #With clinical data
@@ -62,6 +49,8 @@ WithRandomAsBaseline <- function(){
     # Remove title for all legends
     theme(legend.title=element_blank())
   g1
+
+  kMax=30
   ##Export png 700 x 380  for paper as Figure7.png
   #Export PDF 8 x 5 inches for email
 }
@@ -70,11 +59,6 @@ WithRandomAsBaseline <- function(){
 
 #not included because the clinical data model is not including all the variables
 FourLinesClinicalCoxAsBaseline <- function(){
-
-  AUCvsK_103_NTF$method = "M1"
-  AUCvsK_104_NMF$method = "M2"
-  AUCvsK_104_NMF_clini$method = "M3"
-
   #Only first points
   data10 <- rbind(AUCvsK_103_NTF[2:10,],AUCvsK_104_NMF[2:10,], AUCvsK_104_NMF_clini[2:10,])
 
@@ -92,7 +76,6 @@ FourLinesClinicalCoxAsBaseline <- function(){
   g2 = g1 + geom_hline(linetype = 1, yintercept=clinicalAUC_baseline,
                        colour="#5086ff")
 
-  data4Line=data.frame(X=c(2:10), Y=clinicalAUC_baseline, method="M4")
   g2 + geom_line(linetype = 1, data=data4Line, aes(x=X, y=Y),
                  lineend = "square", linejoin = "bevel",
                  linemitre = 1 )
@@ -107,10 +90,6 @@ ThreeLines <- function(){
   clinicalAUC_baseline = AUC_CD_iauc-0.14
 
   ##1- Using Cox regression
-
-  AUCvsK_103_NTF$method = "N Matrix F"
-  AUCvsK_104_NMF$method = "N Tensor F"
-
   dataALL <- rbind(AUCvsK_103_NTF,AUCvsK_104_NMF)
   dataALL <- dataALL[-16,]
   dataALL <- dataALL[-1,]
@@ -127,14 +106,6 @@ ThreeLines <- function(){
     xlab("k first components") +
     ylab("A U C") +
     geom_point(size=3)
-
-  #Export PDF 8 x 5 inches
-  # AUCvsK_103_NTF$method = "NMF"
-  # AUCvsK_104_NMF$method = "NTF"
-
-
-   AUCvsK_103_NTF$method = "M2"
-   AUCvsK_104_NMF$method = "M1"
 
 
   #Only first points
@@ -196,9 +167,6 @@ ThreeLines <- function(){
 
 ##1- Using (L1) Lasso regression
 lassoR <- function(){
-  AUCvsK_106_NTF$method = "N Matrix F"
-  AUCvsK_105_NMF$method = "N Tensor F"
-
   dataALL <- rbind(AUCvsK_106_NTF,AUCvsK_105_NMF)
 
   dataALL <- dataALL[-16,]

@@ -50,14 +50,15 @@ NTF_AUC <- function()
   patiF <- merge(as.data.frame(patiF), as.data.frame(survivalClinical), by='row.names', all=TRUE)
   patiF <- patiF[,-1]
 
+  #testing sample
+  smp_size <- floor(0.2 * numberOfPatiens)
+
   for (k in seq(kMax)){
     AUC_CD_K <- rep(0,numSplits)
 
     #we used 10 random splits
     # 80% of the sample size for training
     set.seed(k*1234)  # set seed for reproducibility
-    #testing sample
-    smp_size <- floor(0.2 * numberOfPatiens)
 
     obsInTest <- perrySplits(numberOfPatiens, splitControl(m = smp_size, R = numSplits))
 
