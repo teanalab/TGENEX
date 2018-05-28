@@ -50,8 +50,7 @@ NTF_AUC <- function()
   patiF <- merge(as.data.frame(patiF), as.data.frame(survivalClinical), by='row.names', all=TRUE)
   patiF <- patiF[,-1]
 
-
-  for (k in seq(2,kMax)){
+  for (k in seq(kMax)){
     AUC_CD_K <- rep(0,numSplits)
 
     #we used 10 random splits
@@ -64,8 +63,8 @@ NTF_AUC <- function()
 
     for (i in seq(1,numSplits)) {
       test_ind <- obsInTest$subsets[,i]
-      train <- patiF[-test_ind,c(kMax-k:kMax,kMax+1,kMax+2)]
-      test <- patiF[test_ind,c(kMax-k:kMax,kMax+1,kMax+2)]
+      train <- patiF[-test_ind,c(c(kMax-k:kMax),kMax+1,kMax+2)]
+      test <- patiF[test_ind,c(c(kMax-k:kMax),kMax+1,kMax+2)]
 
       #cox proportional hazard model
       coxFit <- coxph(Surv(time = Overall.Survival..Months.,
@@ -86,14 +85,14 @@ NTF_AUC <- function()
       #plot(AUC_CD, main = paste("CD", AUC_CD$iauc))
       AUC_CD_K[i] <- AUC_CD$iauc
     }
-
+    #save.image(paste("temp/2v4-AUC_NTF_k",k,".RData",sep=''))
     AUC_CD_all[k] = mean(AUC_CD_K)
   }
   AUC_CD_all
 
   NTF_AUC <- AUC_CD_all
-  save(NTF_AUC, file = "output4paper/NTF_AUC.RData")
+  #save(NTF_AUC, file = "output4paper/NTF_AUC.RData")
 }
 
 sess <- sessionInfo() #save session on variable
-save.image("temp/5-2v4.RData")
+#save.image("temp/5-2v4.RData")

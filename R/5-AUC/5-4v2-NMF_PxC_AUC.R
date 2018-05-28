@@ -39,14 +39,10 @@ NMF_PxM_AUC <- function()
   names(patiF) <- paste('V',seq(1:10),sep='')
   patiF <- cbind.data.frame(patiF,survivalClinical)
 
-  for (k in seq(2,kMax)){
+  for (k in seq(kMax)){
     AUC_CD_K <- rep(0,numSplits)
-
-    #we used 10 random splits
-    # 80% of the sample size for training
     set.seed(k*1234)  # set seed for reproducibility
-    #testing sample
-    smp_size <- floor(0.2 * numberOfPatiens)
+    smp_size <- floor(0.2 * numberOfPatiens) #testing sample. 80% of the sample size for training
 
     obsInTest <- perrySplits(numberOfPatiens, splitControl(m = smp_size, R = numSplits))
 
@@ -74,15 +70,14 @@ NMF_PxM_AUC <- function()
       #plot(AUC_CD, main = paste("CD", AUC_CD$iauc))
       AUC_CD_K[i] <- AUC_CD$iauc
     }
-
-    #macro-average
+    #save.image(paste("temp/4v2-AUC_NMF_PxC_k",k,".RData",sep=''))
     AUC_CD_all[k] = mean(AUC_CD_K)
   }
   AUC_CD_all
 
   NMF_PxC_AUC <- AUC_CD_all
-  save(NMF_PxC_AUC, file = "output4paper/NMF_PxC_AUC.RData")
+  #save(NMF_PxC_AUC, file = "output4paper/NMF_PxC_AUC.RData")
 }
 
 sess <- sessionInfo() #save session on variable
-save.image("temp/5-4v2.RData")
+#save.image("temp/5-4v2.RData")

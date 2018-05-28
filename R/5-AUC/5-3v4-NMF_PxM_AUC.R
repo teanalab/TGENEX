@@ -31,28 +31,26 @@ NMF_PxM_AUC <- function()
 {
   numSplits = 10
   AUC_CD_all <- rep(0,kMax)
-
+  smp_size <- floor(0.2 * numberOfPatiens) #testing sample
 
   #normalize rows
   patiF <- data.frame( t(apply(patientNMF_PxM,1,function(x){x/sum(x)})) )
   names(patiF) <- paste('V',seq(1:10),sep='')
   patiF <- cbind.data.frame(patiF,survivalClinical)
 
-  for (k in seq(2,kMax)){
+  for (k in seq(kMax-1)){
     AUC_CD_K <- rep(0,numSplits)
-
     #we used 10 random splits
     # 80% of the sample size for training
     set.seed(k*1234)  # set seed for reproducibility
-    #testing sample
-    smp_size <- floor(0.2 * numberOfPatiens)
+
 
     obsInTest <- perrySplits(numberOfPatiens, splitControl(m = smp_size, R = numSplits))
 
     for (i in seq(1,numSplits)) {
       test_ind <- obsInTest[[4]][,i]
-      train <- patiF[-test_ind,c(kMax-k:kMax,kMax+1,kMax+2)]
-      test <- patiF[test_ind,c(kMax-k:kMax,kMax+1,kMax+2)]
+      train <- patiF[-test_ind,c((kMax-k):kMax,kMax+1,kMax+2)]
+      test <- patiF[test_ind,c((kMax-k):kMax,kMax+1,kMax+2)]
 
       #cox proportional hazard model
       coxFit <- coxph(Surv(time = Overall.Survival..Months.,
@@ -73,15 +71,15 @@ NMF_PxM_AUC <- function()
       #plot(AUC_CD, main = paste("CD", AUC_CD$iauc))
       AUC_CD_K[i] <- AUC_CD$iauc
     }
+    #save.image(paste("temp/3v4-AUC_NMF_PxM_k",k,".RData",sep=''))
 
-    #macro-average
     AUC_CD_all[k] = mean(AUC_CD_K)
   }
   AUC_CD_all
 
   NMF_PxM_AUC <- AUC_CD_all
-  save(NMF_PxM_AUC, file = "output4paper/NMF_PxM_AUC.RData")
+  #save(NMF_PxM_AUC, file = "output4paper/NMF_PxM_AUC.RData")
 }
 
 sess <- sessionInfo() #save session on variable
-save.image("temp/5-3v4.RData")
+#save.image("temp/5-3v4.RData")

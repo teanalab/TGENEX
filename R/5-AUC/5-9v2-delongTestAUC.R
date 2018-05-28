@@ -1,16 +1,14 @@
-#' version 1 (3/14/2018)
+#' version 2 (5/27/2018)
 #' Testing the AUCs with the DeLong test from the pROC package
 
-
-
 rm(list = ls())
-load("temp/5-9-Data.RData")
+load("temp/5-9v2-data.RData")
 loadls("pROC",FALSE)
 
-#' Get all needed data
 LoadMyData <- funtion()
 {
-  load(file="results/10March2018/103-AUC_NMF_i9.RData")
+  # get max AUC from NTF
+  load(file="temp/2v4-AUC_NTF_k1.RData")
 
   outcometr1 <- Surv.rsp[,2]
   predicttr1 <- lp
@@ -20,7 +18,7 @@ LoadMyData <- funtion()
   rm(list=ls()[-which(ls() %in% c("outcometr1","outcomete1",
                                   "predicttr1", "predictte1" ))])
 
-  load(file="results/10March2018/104-AUC_NMF_i10.RData")
+  load(file="temp/3v4-AUC_NMF_PxM_k10.RData")
 
   outcometr2 <- Surv.rsp[,2]
   predicttr2 <- lp
@@ -32,7 +30,7 @@ LoadMyData <- funtion()
                                   "outcometr2", "outcomete2",
                                   "predicttr2", "predictte2" ))])
 
-  load(file="temp/104-AUC_NMF_clini_i6.RData")
+  load(file="temp/4v2-AUC_NMF_PxC_k9.RData")
 
   outcometr3 <- Surv.rsp[,2]
   predicttr3 <- lp
@@ -49,28 +47,24 @@ LoadMyData <- funtion()
   libs<-c("Packages.R")
   libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", libs,sep='')
   sapply(libs, function(u) {source(u)})
-  onlyBaseLibs()
-  loadls("pROC")
+  loadls("pROC",F)
 
-  save.image(file="temp/109-Data.RData")
+  save.image(file="temp/5-9v2-data.RData")
 }
 
 
-#' Title
-#'
-#' @section step 1
-#'
-#' @examples
-foo <- function() {
+#' computeDeLongT
+computeDeLongT <- function() {
   auc1 <- auc(outcometr1, predicttr1) #NFT
   auc2 <- auc(outcometr2, predicttr2) #NMF GENES
 
   roc.test(auc1,auc2,method="delong")
 
+  auc1 <- auc(outcometr1, predicttr1) #NFT
   auc3 <- auc(outcomete3, predictte3) #NMF CLINI
-  roc.test(auc3,auc1,method="delong")
+  roc.test(auc1,auc3,method="delong")
 }
 
 #end
 sess <- sessionInfo() #save session on variable
-save.image(file="temp/x.RData")
+save.image(file="temp/5-9v2.RData")
