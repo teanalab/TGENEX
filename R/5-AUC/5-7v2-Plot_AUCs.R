@@ -50,7 +50,6 @@ WithRandomAsBaseline <- function(){
     theme(legend.title=element_blank())
   g1
 
-  kMax=30
   ##Export png 700 x 380  for paper as Figure7.png
   #Export PDF 8 x 5 inches for email
 }
