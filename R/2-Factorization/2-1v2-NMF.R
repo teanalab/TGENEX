@@ -2,14 +2,20 @@
 # run all algorithms
 # with rank = 30
 
+
+
 #######
 rm(list = ls())
-load("data/boolMutation.RData")
+
 
 #load my libraries
 libs<-c("Packages.R", "survival_analysis.R")
 libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", libs,sep='')
 sapply(libs, function(u) {source(u)})
+
+save.image("data/myLib.RData")
+
+load("data/boolMutation.RData")
 
 loadls("plyr survival lmtest", T)
 loadls("stats registry", T)

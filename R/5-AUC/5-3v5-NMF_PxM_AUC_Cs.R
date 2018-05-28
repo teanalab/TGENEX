@@ -37,8 +37,9 @@ NMF_PxM_AUC <- function()
 
   #normalize rows
   patiF <- data.frame( t(apply(patientNMF_PxM,1,function(x){x/sum(x)})) )
-  names(patiF) <- paste('V',seq(1:10),sep='')
-  patiF <- cbind.data.frame(patiF,survivalClinical)
+  names(patiF) <- paste('V',seq(1:kMax),sep='')
+  patiF <- merge(as.data.frame(patiF), as.data.frame(survivalClinical), by='row.names', all=TRUE)
+  patiF <- patiF[,-1]
 
   #times	The vector of time points at which AUC is evaluated.
   utimes <- unique( survivalClinical[survivalClinical$Overall.Survival.Status == 1,"Overall.Survival..Months."] )
