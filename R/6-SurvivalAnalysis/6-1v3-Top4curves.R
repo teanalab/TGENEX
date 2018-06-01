@@ -68,6 +68,11 @@ survAna <- function(){
   #https://stats.stackexchange.com/questions/66591/coxph-ran-out-of-iterations-and-did-not-converge
 
 
+
+
+  #
+
+
   patiF <- ntfPatientFactorMatrix()
   patiF <- merge(as.data.frame(patiF), as.data.frame(survivalClinical), by='row.names', all=TRUE)
   patiF <- patiF[,-1]

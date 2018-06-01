@@ -16,7 +16,6 @@ LoadMyData <- function(){
   load("data/survClinical.RData")
   load("data/patients.RData")
 
-
   survivalClinical <- survClinical
   survivalClinical[,"Patient.ID"] <- survivalClinical$patient.bcr_patient_barcode
   survivalClinical[,"Overall.Survival.Status"] <- (survivalClinical$patient.vital_status=="dead")
@@ -36,6 +35,7 @@ randomAUCs <- function()
   kMax = 40
   AUC_CD_allK <- rep(list(),kMax)
   Cstat_allK <- rep(list(),kMax)
+  LogrankP_allK <- rep(list(),kMax)
   nSplits = 100
   percenTesting = 0.2
 
@@ -46,13 +46,13 @@ randomAUCs <- function()
   utimes <- utimes[ order(utimes) ]
 
   for (k in c(2:kMax) ){
-    varName = paste("randomF_R_",k,sep='')
-    load(paste("data/random_norm/",varName,".RData",sep=''))
-    #random factor
-    assign("randPatfm", get(varName) )
+
+    load(file=paste("data/patientA_random/patientA_random_",k,".RData",sep='') )
+    patiF <- cbind(patientAfiliation,survivalClinical)
 
     AUC_CD_K <- rep(0,nSplits)
     Cstat_K <- rep(0,nSplits)
+    LogrankP_K <- rep(0,numSplits)
 
     set.seed(k*1234)  # set seed for reproducibility
     smp_size <- floor(0.2 * numberOfPatiens)  #testing sample

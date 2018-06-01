@@ -34,7 +34,7 @@ loadlib("NMF", T) #For non-negative matrix factorization
 # meth <- c(names(meth), meth)
 # meth
 
-rankNMF <- 30
+rankNMF <- 31
 
 res <- nmf(boolMutation, rankNMF, "snmf/l", seed = 123456)
 
@@ -46,6 +46,8 @@ dim(w)
 h <- coef(res)
 dim(h)
 ## [1] 3 38
+
+table(survivalClinical$Overall.Survival.Status)
 
 
 ########
