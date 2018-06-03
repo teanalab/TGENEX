@@ -4,14 +4,14 @@
 rm(list = ls())
 
 writePatientsMembershipNTF <- function(k){
-  for (k in c(2:40) )
+  for (k in c(2:30) )
   {
     load(paste("data/factors/factors_",k,".RData",sep='') )
     #principal verotype from NTF assign
     patiF <- patientsF
-    for (i in seq_along(weightsC)) {
-      patiF[,i] <- patiF[,i]*weightsC[i]
-    }
+    #for (i in seq_along(weightsC)) {
+    #  patiF[,i] <- patiF[,i]*weightsC[i]
+    #}
     patientVsComponents <- as.data.frame(patiF)
     patientVsComponents[, "max"] <- apply(patientVsComponents, 1, max)
     patientVsComponents[, "whichmax"] <- apply(patientVsComponents, 1, which.max)
