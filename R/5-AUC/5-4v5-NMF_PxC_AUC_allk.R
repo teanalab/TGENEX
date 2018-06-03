@@ -4,22 +4,6 @@ rm(list = ls())
 load(file="temp/5-4v2-data.RData")
 loadls("plyr survival Rcpp missForest survAUC perry",F)
 
-LoadMyData <- function(){
-  load(file="data/NMF_30_PxC.RData")
-  load("data/survivalClinical-5-1_30.RData")
-
-  rm(list=ls()[-which(ls() %in% c("patientNMF_PxC","survivalClinical",
-                                  "patients","kMax", "numberOfPatiens"))])
-
-  #load my libraries
-  libs<-c("Packages.R")
-  libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/de2ecbae950d5d4b8cb1d7ba7bde5301c34186c2/", libs,sep='')
-  sapply(libs, function(u) {source(u)})
-  #required for the cox proportional hazard model
-  loadls("plyr survival Rcpp missForest survAUC perry",F)
-
-  save.image(file="temp/5-4v3-data.RData")
-}
 
 #line by line
 NMF_PxM_AUC <- function()
@@ -139,13 +123,13 @@ NMF_PxM_AUC <- function()
   }
 
   NMF_PxC_AUC <- AUC_CD_all
-  NMF_PxM_Cstat <- Cstat_allK
-  NMF_PxM_logRank <- LogrankP_allK
-  NMF_PxM_logRank_train <- LogrankP_allK_train
+  NMF_PxC_Cstat <- Cstat_allK
+  NMF_PxC_logRank <- LogrankP_allK
+  NMF_PxC_logRank_train <- LogrankP_allK_train
   save(NMF_PxC_AUC, file = paste(folderOutput, "AUC.RData", sep='') )
-  save(NMF_PxM_Cstat, file =  paste(folderOutput, "Cstat.RData", sep='') )
-  save(NMF_PxM_logRank, file = paste(folderOutput, "logRank.RData", sep='') )
-  save(NMF_PxM_logRank_train, file = paste(folderOutput, "logRank_train.RData", sep='') )
+  save(NMF_PxC_Cstat, file =  paste(folderOutput, "Cstat.RData", sep='') )
+  save(NMF_PxC_logRank, file = paste(folderOutput, "logRank.RData", sep='') )
+  save(NMF_PxC_logRank_train, file = paste(folderOutput, "logRank_train.RData", sep='') )
 }
 
 sess <- sessionInfo() #save session on variable

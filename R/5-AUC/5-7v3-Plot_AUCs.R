@@ -5,7 +5,7 @@ rm(list = ls())
 
 # LoadMyData <- function()
 # {
-  load(file="output4paper/randomAUC.RData")
+  load(file="output4paper/random_AUC.RData")
   load(file="output4paper/NTF_AUC.RData")
   load(file="output4paper/NMF_PxC_AUC.RData")
   load(file="output4paper/NMF_PxM_AUC.RData")
@@ -30,7 +30,7 @@ rm(list = ls())
   sdX <- apply(x,2,sd)
   NMF_PxC_AUC_ = data.frame(k=interval, auc= meanX, method = "M3", sd= sdX)
 
-  x = as.data.frame(randomAUC[interval])
+  x = as.data.frame(random_AUC[interval])
   meanX <- apply(x,2,mean)
   sdX <- apply(x,2,sd)
   randomAUC_ = data.frame(k=interval, auc= meanX, method = "M4", sd= sdX)

@@ -12,7 +12,7 @@ rm(list = ls())
   load("data/myLib.RData")
   loadlib("ggplot2",F)
 
-  kMax=30
+  kMax=12
   interval = c(2:kMax)
 
   x = as.data.frame(NTF_logRank[interval])
