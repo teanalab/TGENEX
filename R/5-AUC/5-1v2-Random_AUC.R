@@ -4,21 +4,16 @@
 # the sum of components per each patient should sum to 1
 
 rm(list = ls())
-#load(file="data/survivalClinical-5-1.RData")
 load(file="data/survivalClinical-5-1_30.RData")
 loadls("plyr survival Rcpp missForest survAUC perry",F)
 
 LoadMyData <- function(){
   #load my libraries
-  loadlib<-c("Packages.R")
-  loadlib<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", loadlib,sep='')
-  sapply(loadlib, function(u) {source(u)})
+  load("data/myLib.RData")
   #required for the cox proportional hazard model
-  loadls("plyr survival Rcpp missForest survAUC",FALSE)
-
+  loadls("plyr survival Rcpp missForest survAUC",F)
   load("data/survClinical.RData")
   load("data/patients.RData")
-
 
   survivalClinical <- survClinical
   survivalClinical[,"Patient.ID"] <- survivalClinical$patient.bcr_patient_barcode

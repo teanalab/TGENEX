@@ -44,7 +44,7 @@ rm(list = ls())
   theme_set(theme_light(base_size = 18))
   g1 <- ggplot(data10, aes(x=k, y=auc, colour=method, shape=method, fill=method)) +
     geom_line(linetype="dashed") +
-    xlab("# of most prevalent subtypes") +
+    xlab("number of breast cancer subtypes") +
     ylab("AUC") +
     geom_point(size=3) +
     # Remove title for all legends

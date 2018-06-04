@@ -10,24 +10,21 @@ loadls("plyr survival Rcpp missForest survAUC perry",F)
 
 LoadMyData <- function(){
   #load my libraries
-  loadlib<-c("Packages.R")
-  loadlib<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", loadlib,sep='')
-  sapply(loadlib, function(u) {source(u)})
+  load("data/myLib.RData")
   #required for the cox proportional hazard model
-  loadls("plyr survival Rcpp missForest survAUC",FALSE)
+  loadls("plyr survival Rcpp missForest survAUC",F)
 
   load("data/survClinical.RData")
   load("data/patients.RData")
-
 
   survivalClinical <- survClinical
   survivalClinical[,"Patient.ID"] <- survivalClinical$patient.bcr_patient_barcode
   survivalClinical[,"Overall.Survival.Status"] <- (survivalClinical$patient.vital_status=="dead")
   survivalClinical[,"Overall.Survival..Months."] <- survivalClinical$OS_MONTHS
 
-  survivalClinical <-  survivalClinical[which(survivalClinical$Patient.ID %in% patients),]
+  survivalClinical <-  survivalClinical[which(survivalClinical$Patient.ID %in% patients), ]
   numberOfPatiens <- dim(survivalClinical)[[1]]
-  kMax <- 30
+  kMax <- 7
   row.names(survivalClinical) <- survivalClinical$Patient.ID
   survivalClinical <- survivalClinical[,c("Overall.Survival.Status","Overall.Survival..Months.")]
   save.image(file="data/survivalClinical-5-1_30.RData")
@@ -47,11 +44,10 @@ randomPatientFactorMatrix <- function(){
 #line by line
 randomAUCs <- function()
 {
-  AUC_CD_allK <- rep(0,kMax)
+  AUC_CD_allK <- rep(list(),kMax)
   Cstat_allK <- rep(list(),kMax)
   nRepeats = 10
   percenTesting = 0.2
-  numCrossval = 5
 
   set.seed(100)
   #random factor
@@ -59,7 +55,7 @@ randomAUCs <- function()
   randPatfm <- cbind.data.frame(randPatfm,survivalClinical)
 
   #times	The vector of time points at which AUC is evaluated.
-  utimes <- unique( survivalClinical[survivalClinical$Overall.Survival.Status == 1,"Overall.Survival..Months."] )
+  utimes <- unique( survivalClinical[survivalClinical$Overall.Survival.Status == 1, "Overall.Survival..Months."] )
   utimes <- utimes[ order(utimes) ]
 
   for (k in seq(kMax)){
@@ -72,7 +68,6 @@ randomAUCs <- function()
     set.seed(k*1234)  # set seed for reproducibility
     #testing sample
     smp_size <- floor(0.2 * numberOfPatiens)
-
 
     ## data folds for K-fold cross-validation
     # perrySplits(20, foldControl(K = 5))
@@ -106,13 +101,13 @@ randomAUCs <- function()
       Cstat_K[i] <- Cstat
     }
     #save.image(paste("temp/5-1v3-AUC_Random_k",k,".RData",sep=''))
-    AUC_CD_allK[k] = mean(AUC_CD_K)
+    AUC_CD_allK[k] = list(AUC_CD_K)
     Cstat_allK[k] <- list(Cstat_K)
   }
   randomAUC <- AUC_CD_allK
   randomCstat <- Cstat_allK
-  #save(randomAUC, file = "output4paper/randomAUC.RData")
-  #save(randomCstat, file = "output4paper/randomCstat.RData")
+  save(randomAUC, file = "output4paper/randomAUC.RData")
+  save(randomCstat, file = "output4paper/randomCstat.RData")
 }
 
 sess <- sessionInfo() #save session on variable

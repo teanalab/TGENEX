@@ -8,8 +8,9 @@ load(file="temp/5-2v4-data.RData")
 loadls("plyr survival Rcpp survAUC perry",F)
 
 LoadMyData <- function(){
-  load(file="data/factors.RData")
+  load(file="data/factors/factors_7.RData")
   load("data/survivalClinical-5-1_30.RData")
+  kMax <- 7
   # load(file="data/R_10/factors.RData")
   # load("data/R_10/survivalClinical-5-1_.RData")
 
@@ -44,7 +45,7 @@ ntfPatientFactorMatrix <- function(){
 NTF_AUC <- function()
 {
   numSplits = 10
-  AUC_CD_all <- rep(0,kMax)
+  AUC_CD_all <- rep(list(), kMax)
 
   patiF <- ntfPatientFactorMatrix()
   patiF <- merge(as.data.frame(patiF), as.data.frame(survivalClinical), by='row.names', all=TRUE)
@@ -86,14 +87,14 @@ NTF_AUC <- function()
       #plot(AUC_CD, main = paste("CD", AUC_CD$iauc))
       AUC_CD_K[i] <- AUC_CD$iauc
     }
-    #save.image(paste("temp/2v4-AUC_NTF_k",k,".RData",sep=''))
-    AUC_CD_all[k] = mean(AUC_CD_K)
+    save.image(paste("temp/2v4-AUC_NTF_k",k,".RData",sep=''))
+    AUC_CD_all[k] = list(AUC_CD_K)
   }
   AUC_CD_all
 
   NTF_AUC <- AUC_CD_all
-  #save(NTF_AUC, file = "output4paper/NTF_AUC.RData")
+  save(NTF_AUC, file = "output4paper/NTF_AUC.RData")
 }
 
 sess <- sessionInfo() #save session on variable
-#save.image("temp/5-2v4.RData")
+save.image("temp/5-2v4.RData")

@@ -5,27 +5,35 @@ rm(list = ls())
 
 #LoadMyData <- function()
 #{
-  load(file="output4paper/random_logRank.RData")
-  load(file="output4paper/NTF_logRank.RData")
-  load(file="output4paper/NMF_PxC_longrp.RData")
-  load(file="output4paper/NMF_PxM_longrp.RData")
+  load(file="output4paper/random_logRank_train.RData")
+  load(file="output4paper/NTF_logRank_train.RData")
+  load(file="output4paper/NMF_PxC_logRank_train.RData")
+  load(file="output4paper/NMF_PxM_logRank_train.RData")
   load("data/myLib.RData")
   loadlib("ggplot2",F)
 
   kMax=12
   interval = c(2:kMax)
-
-  NTF_AUC_ = data.frame(k=interval, auc= NTF_logRank[interval], method = "M1")
-
-  NMF_PxM_AUC_ = data.frame(k=interval, auc= NMF_PxM_longrp[interval], method = "M2")
-
-  NMF_PxC_AUC_ = data.frame(k=interval, auc= NMF_PxC_longrp[interval], method = "M3")
-
-  x = as.data.frame(random_logRank[interval])
+  x = as.data.frame(NTF_logRank_train[interval])
   meanX <- apply(x,2,mean)
   sdX <- apply(x,2,sd)
-  randomAUC_ = data.frame(k=interval, auc= meanX, method = "M4")
-#}
+  NTF_AUC_ = data.frame(k=interval, auc= meanX, method = "M1", sd= sdX)
+
+  x = as.data.frame(NMF_PxM_logRank_train[interval])
+  meanX <- apply(x,2,mean)
+  sdX <- apply(x,2,sd)
+  NMF_PxM_AUC_ = data.frame(k=interval, auc= meanX, method = "M2", sd= sdX)
+
+  x = as.data.frame(NMF_PxC_logRank_train[interval])
+  meanX <- apply(x,2,mean)
+  sdX <- apply(x,2,sd)
+  NMF_PxC_AUC_ = data.frame(k=interval, auc= meanX, method = "M3", sd= sdX)
+
+  x = as.data.frame(random_logRank_train[interval])
+  meanX <- apply(x,2,mean)
+  sdX <- apply(x,2,sd)
+  randomAUC_ = data.frame(k=interval, auc= meanX, method = "M4", sd= sdX)
+  #}
 
 
 #WithRandomAsBaseline <- function(){
@@ -35,7 +43,7 @@ rm(list = ls())
   theme_set(theme_light(base_size = 18))
   g1 <- ggplot(data10, aes(x=k, y=auc, colour=method, shape=method, fill=method)) +
     geom_line(linetype="dashed") +
-    xlab("# of most prevalent subtypes") +
+    xlab("number of breast cancer subtypes") +
     ylab("Cox Log rank pvalue") +
     geom_point(size=3) +
     #geom_errorbar(aes(ymin=auc-sd, ymax=auc+sd), position=position_dodge(0.05))+
@@ -43,10 +51,12 @@ rm(list = ls())
     theme(legend.title=element_blank())
   g1
 
-  NTF_AUC_$auc[which(NTF_AUC_$k==19)]
-#4.712441e-05
-  NMF_PxC_AUC_$auc[which(NMF_PxC_AUC_$k==2)]
-#0.0004459547
+  NTF_AUC_$auc[which(NTF_AUC_$k==12)]
+#0.1176766
+  NMF_PxC_AUC_$auc[which(NMF_PxC_AUC_$k==7)]
+#0.04752304
+  NMF_PxM_AUC_$auc[which(NMF_PxC_AUC_$k==7)]
+#0.065641
 
   ##Export png 700 x 500  for paper as Figure7.png
   #Export PDF 8 x 5 inches for email

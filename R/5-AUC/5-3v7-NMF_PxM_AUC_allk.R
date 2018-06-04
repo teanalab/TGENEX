@@ -5,15 +5,6 @@ rm(list = ls())
 load(file="temp/5-3v6-data.RData")
 loadls("plyr survival Rcpp missForest survAUC perry",F)
 
-LoadMyData <- function(){
-  load("data/survivalClinical-5-1_30.RData")
-  rm(list=ls()[-which(ls() %in% c("survivalClinical",
-                                  "patients","kMax", "numberOfPatiens"))])
-  load("data/myLib.RData")
-  loadls("plyr survival Rcpp missForest survAUC perry",FALSE)
-  save.image(file="temp/5-3v6-data.RData")
-}
-
 #line by line
 NMF_PxM_AUC <- function()
 {
