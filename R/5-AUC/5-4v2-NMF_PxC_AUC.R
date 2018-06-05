@@ -9,21 +9,11 @@ load(file="temp/5-4v2-data.RData")
 loadls("plyr survival Rcpp missForest survAUC perry",F)
 
 LoadMyData <- function(){
-  #load(file="data/NMF_PxC.RData")
-  load(file="data/NMF_30_PxC.RData")
-  #load("data/survivalClinical-5-1.RData")
   load("data/survivalClinical-5-1_30.RData")
-
-  rm(list=ls()[-which(ls() %in% c("patientNMF_PxC","survivalClinical",
-                                  "patients","kMax", "numberOfPatiens"))])
-
-  #load my libraries
-  libs<-c("Packages.R")
-  libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/de2ecbae950d5d4b8cb1d7ba7bde5301c34186c2/", libs,sep='')
-  sapply(libs, function(u) {source(u)})
+  load(file="data/NMF/NMF_PxC_R_12.RData")
+  kMax <- 12
   #required for the cox proportional hazard model
   loadls("plyr survival Rcpp missForest survAUC perry",F)
-
   save.image(file="temp/5-4v2-data.RData")
 }
 
@@ -31,12 +21,11 @@ LoadMyData <- function(){
 NMF_PxM_AUC <- function()
 {
   numSplits = 10
-  AUC_CD_all <- rep(0,kMax)
-
+  AUC_CD_all <- rep(list(),kMax)
 
   #normalize rows
-  patiF <- data.frame( t(apply(patientNMF_PxC,1,function(x){x/sum(x)})) )
-  names(patiF) <- paste('V',seq(1:10),sep='')
+  patiF <- data.frame( t(apply(patientNMF_PxC_R_12,1,function(x){x/sum(x)})) )
+  names(patiF) <- paste('V',seq(1:kMax),sep='')
   patiF <- cbind.data.frame(patiF,survivalClinical)
 
   for (k in seq(kMax)){
@@ -71,13 +60,13 @@ NMF_PxM_AUC <- function()
       AUC_CD_K[i] <- AUC_CD$iauc
     }
     #save.image(paste("temp/4v2-AUC_NMF_PxC_k",k,".RData",sep=''))
-    AUC_CD_all[k] = mean(AUC_CD_K)
+    AUC_CD_all[k] = list(AUC_CD_K)
   }
   AUC_CD_all
 
   NMF_PxC_AUC <- AUC_CD_all
-  #save(NMF_PxC_AUC, file = "output4paper/NMF_PxC_AUC.RData")
+  save(NMF_PxC_AUC, file = "output4paper/NMF_PxC_AUC.RData")
 }
 
 sess <- sessionInfo() #save session on variable
-#save.image("temp/5-4v2.RData")
+save.image("temp/5-4v2.RData")

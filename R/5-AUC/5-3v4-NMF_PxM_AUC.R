@@ -9,8 +9,8 @@ loadls("plyr survival Rcpp missForest survAUC perry",F)
 
 LoadMyData <- function(){
   load("data/survivalClinical-5-1_30.RData")
-  kMax <- 7
-  load(file="data/NMF/NMF_PxM_R_7.RData")
+  kMax <- 12
+  load(file="data/NMF/NMF_PxM_R_12.RData")
 
   #required for the cox proportional hazard model
   loadls("plyr survival Rcpp missForest survAUC perry",FALSE)
@@ -26,11 +26,11 @@ NMF_PxM_AUC <- function()
   smp_size <- floor(0.2 * numberOfPatiens) #testing sample
 
   #normalize rows
-  patiF <- data.frame( t(apply(patientNMF_PxM_R_7,1,function(x){x/sum(x)})) )
+  patiF <- data.frame( t(apply(patientNMF_PxM_R_12,1,function(x){x/sum(x)})) )
   names(patiF) <- paste('V',seq(kMax),sep='')
   patiF <- cbind.data.frame(patiF,survivalClinical)
 
-  for (k in seq(kMax-1)){
+  for (k in seq(kMax)){
     AUC_CD_K <- rep(0,numSplits)
     #we used 10 random splits
     # 80% of the sample size for training
@@ -41,8 +41,8 @@ NMF_PxM_AUC <- function()
 
     for (i in seq(1,numSplits)) {
       test_ind <- obsInTest[[4]][,i]
-      train <- patiF[-test_ind,c((kMax-k):kMax,kMax+1,kMax+2)]
-      test <- patiF[test_ind,c((kMax-k):kMax,kMax+1,kMax+2)]
+      train <- patiF[-test_ind,c(2:kMax,kMax+1,kMax+2)]
+      test <- patiF[test_ind,c(2:kMax,kMax+1,kMax+2)]
 
       #cox proportional hazard model
       coxFit <- coxph(Surv(time = Overall.Survival..Months.,
@@ -70,8 +70,8 @@ NMF_PxM_AUC <- function()
   AUC_CD_all
 
   NMF_PxM_AUC <- AUC_CD_all
-  #save(NMF_PxM_AUC, file = "output4paper/NMF_PxM_AUC.RData")
+  save(NMF_PxM_AUC, file = "output4paper/NMF_PxM_AUC.RData")
 }
 
 sess <- sessionInfo() #save session on variable
-#save.image("temp/5-3v4.RData")
+save.image("temp/5-3v4.RData")

@@ -6,27 +6,7 @@
 rm(list = ls())
 load(file="data/survivalClinical-5-1_30.RData")
 loadls("plyr survival Rcpp missForest survAUC perry",F)
-
-LoadMyData <- function(){
-  #load my libraries
-  load("data/myLib.RData")
-  #required for the cox proportional hazard model
-  loadls("plyr survival Rcpp missForest survAUC",F)
-  load("data/survClinical.RData")
-  load("data/patients.RData")
-
-  survivalClinical <- survClinical
-  survivalClinical[,"Patient.ID"] <- survivalClinical$patient.bcr_patient_barcode
-  survivalClinical[,"Overall.Survival.Status"] <- (survivalClinical$patient.vital_status=="dead")
-  survivalClinical[,"Overall.Survival..Months."] <- survivalClinical$OS_MONTHS
-
-  survivalClinical <-  survivalClinical[which(survivalClinical$Patient.ID %in% patients),]
-  numberOfPatiens <- dim(survivalClinical)[[1]]
-  kMax <- 30
-  row.names(survivalClinical) <- survivalClinical$Patient.ID
-  survivalClinical <- survivalClinical[,c("Overall.Survival.Status","Overall.Survival..Months.")]
-  save.image(file="data/survivalClinical-5-1_30.RData")
-}
+kMax <- 12
 
 #source
 randomPatientFactorMatrix <- function(){
@@ -42,7 +22,7 @@ randomPatientFactorMatrix <- function(){
 #line by line
 randomAUCs <- function()
 {
-  AUC_CD_allK <- rep(0,kMax)
+  AUC_CD_allK <- rep(list(),kMax)
   nRepeats = 10
   percenTesting = 0.2
   numCrossval = 5
@@ -101,9 +81,8 @@ randomAUCs <- function()
       #plot(AUC_CD, main = paste("CD", AUC_CD$iauc))
       AUC_CD_K[i] <- AUC_CD$iauc
     }
-    AUC_CD_allK[k] = mean(AUC_CD_K)
+    AUC_CD_allK[k] = list(AUC_CD_K)
   }
-
   randomAUC <- AUC_CD_allK
   save(randomAUC, file = "output4paper/randomAUC.RData")
 }

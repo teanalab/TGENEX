@@ -3,41 +3,43 @@
 
 rm(list = ls())
 
-LoadMyData <- function()
-{
-  load(file="output4paper/randomAUC.RData")
+#LoadMyData <- function()
+#{
+  load(file="output4paper/random_AUC.RData")
   load(file="output4paper/NTF_AUC.RData")
   load(file="output4paper/NMF_PxC_AUC.RData")
   load(file="output4paper/NMF_PxM_AUC.RData")
 
-  libs<-c("Packages.R")
-  libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", libs,sep='')
-  sapply(libs, function(u) {source(u)})
-  loadlib("ggplot2",F)
+  require (ggplot2)
 
-  kMax=20
+  kMax=length(NTF_AUC)
+  interval = c(2:kMax)
 
-  AUCvsK_103_NTF = data.frame(k=c(2:kMax), auc= NTF_AUC[kMax:2], method = "M1")
-  AUCvsK_104_NMF = data.frame(k=c(2:kMax), auc= NMF_PxM_AUC[2:kMax], method = "M2")
-  AUCvsK_104_NMF_clini = data.frame(k=c(2:kMax), auc= NMF_PxC_AUC[2:kMax], method = "M3")
-  randomAUC_ = data.frame(k=c(2:kMax), auc= randomAUC[2:kMax], method = "M4")
-}
-
-LoadDataFrom5_6 <- function()
-{
-  load(file="output4paper/All-AUC.RData")
-  libs<-c("Packages.R")
-  libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", libs,sep='')
-  sapply(libs, function(u) {source(u)})
-  loadlib("ggplot2",F)
-  kMax = 20
-  AUCvsK_103_NTF = data.frame(k=c(2:kMax), auc= NTF_AUC[kMax:2], method = "M1")
-  randomAUC_ = data.frame(k=c(2:kMax), auc= randomAUC[2:kMax], method = "M4")
-}
+  x = as.data.frame(NTF_AUC)
+  meanX <- apply(x,2,mean)
+  sdX <- apply(x,2,sd)
+  AUCvsK_103_NTF = data.frame(k=interval, auc= meanX[interval], method = "M1", sd= sdX[interval])
 
 
-WithRandomAsBaseline <- function(){
-  data10 <- rbind(AUCvsK_103_NTF,AUCvsK_104_NMF, AUCvsK_104_NMF_clini, randomAUC_)
+  x = as.data.frame(NMF_PxM_AUC)
+  meanX <- apply(x,2,mean)
+  sdX <- apply(x,2,sd)
+  AUCvsK_104_NMF = data.frame(k=interval, auc= meanX[interval], method = "M2", sd= sdX[interval])
+
+  x = as.data.frame(NMF_PxC_AUC)
+  meanX <- apply(x,2,mean)
+  sdX <- apply(x,2,sd)
+  AUCvsK_104_NMF_clini = data.frame(k=interval, auc= meanX[interval], method = "M3", sd= sdX[interval])
+
+
+  x = as.data.frame(random_AUC[interval])
+  meanX <- apply(x,2,mean)
+  sdX <- apply(x,2,sd)
+  randomAUC_ = data.frame(k=interval, auc= meanX, method = "M4", sd= sdX)
+#}
+
+#WithRandomAsBaseline <- function(){
+  data10 <- rbind(AUCvsK_103_NTF,AUCvsK_104_NMF_clini,AUCvsK_104_NMF,randomAUC_)
 
   #With clinical data
   theme_set(theme_light(base_size = 18))
@@ -52,7 +54,7 @@ WithRandomAsBaseline <- function(){
 
   ##Export png 700 x 380  for paper as Figure7.png
   #Export PDF 8 x 5 inches for email
-}
+#}
 
 
 

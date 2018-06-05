@@ -7,39 +7,27 @@ rm(list = ls())
 load(file="temp/5-2v4-data.RData")
 loadls("plyr survival Rcpp survAUC perry",F)
 
-LoadMyData <- function(){
-  load(file="data/factors/factors_7.RData")
-  load("data/survivalClinical-5-1_30.RData")
-  kMax <- 7
-  # load(file="data/R_10/factors.RData")
-  # load("data/R_10/survivalClinical-5-1_.RData")
-
-  rm(list=ls()[-which(ls() %in% c("patientsF","survivalClinical","weightsC",
-                                  "patients","kMax", "numberOfPatiens"))])
-
-  #load my libraries
-  libs<-c("Packages.R")
-  libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/de2ecbae950d5d4b8cb1d7ba7bde5301c34186c2/", libs,sep='')
-  sapply(libs, function(u) {source(u)})
-  #required for the cox proportional hazard model
-  #missForest
-  loadls("plyr survival Rcpp survAUC perry",F)
-
-  save.image(file="temp/5-2v4-data.RData")
-}
-
 #source
 ntfPatientFactorMatrix <- function(){
   weightsComp <- data.frame(namesC = paste('V',seq(1:kMax),sep=''),
                             weight=weightsC[1,] )
   weightsComp[order(weightsComp$weight,decreasing = T),]
   patiF <- patientsF
-  for (i in seq_along(weightsC)) {
-    patiF[,i] <- patiF[,i]*weightsC[i]
-  }
+  # for (i in seq_along(weightsC)) {
+  #   patiF[,i] <- patiF[,i]*weightsC[i]
+  # }
   #normalize rows
-  patiF <- t(apply(patiF,1,function(x){x/sum(x)}))
+  # patiF <- t(apply(patiF,1,function(x){x/sum(x)}))
   patiF
+}
+
+LoadMyData <- function(){
+  #load(file="data/factors/factors_7.RData")
+  load(file="data/factors/factors_12.RData")
+  load("data/survivalClinical-5-1_30.RData")
+  kMax <- 12
+  loadls("plyr survival Rcpp survAUC perry",F)
+  save.image(file="temp/5-2v4-data.RData")
 }
 
 NTF_AUC <- function()
@@ -65,8 +53,8 @@ NTF_AUC <- function()
 
     for (i in seq(1,numSplits)) {
       test_ind <- obsInTest$subsets[,i]
-      train <- patiF[-test_ind,c(c(kMax-k:kMax),kMax+1,kMax+2)]
-      test <- patiF[test_ind,c(c(kMax-k:kMax),kMax+1,kMax+2)]
+      train <- patiF[-test_ind,c(2:kMax,kMax+1,kMax+2)]
+      test <- patiF[test_ind,c(2:kMax,kMax+1,kMax+2)]
 
       #cox proportional hazard model
       coxFit <- coxph(Surv(time = Overall.Survival..Months.,

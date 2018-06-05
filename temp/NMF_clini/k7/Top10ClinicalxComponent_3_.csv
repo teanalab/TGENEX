@@ -1,0 +1,11 @@
+"gene","geneScore"
+"Tumor.CodedT1",1.10892248708954
+"X.clinical.patients..cols..Stage.I",0.861370053441021
+"patient.genderfemale",0.157026436333016
+"X.clinical.patients..cols..infiltrating.ductal.carcinoma",0.0999397206720067
+"patient.breast_carcinoma_estrogen_receptor_statuspositive",0.0861022439264619
+"NA(32,37]",0.0824127894151971
+"HER2.Final.StatusNegative",0.0424012709039805
+"NA(48,54]",0.0395627380453178
+"X.clinical.patients..cols..mixed.histology..please.specify.",0.0336332440976157
+"NA(22,27]",0.0270418259921084

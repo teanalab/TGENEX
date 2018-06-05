@@ -1,0 +1,11 @@
+"gene","geneScore"
+"X.clinical.patients..cols..No_Conversion",1.28019803085895
+"Node.CodedPositive",1.04523516923911
+"patient.genderfemale",0.122029227762916
+"Tumor.CodedT1",0.0851922097295886
+"Metastasis.CodedPositive",0.054864279259265
+"NA(10,16]",0.0455759869303755
+"X.clinical.patients..cols..other..specify",0.0333935255157529
+"NA[3,10]",0.0153712809674334
+"X.clinical.patients..cols..infiltrating.ductal.carcinoma",0.0110887173360759
+"X.clinical.patients..cols..mixed.histology..please.specify.",0.00916777906497728

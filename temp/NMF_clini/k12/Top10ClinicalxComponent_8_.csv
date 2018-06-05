@@ -1,0 +1,11 @@
+"gene","geneScore"
+"NA(16,22]",1.10453005080544
+"patient.genderfemale",0.151946534702488
+"HER2.Final.StatusNegative",0.128942012547701
+"patient.breast_carcinoma_estrogen_receptor_statuspositive",0.12078273716834
+"X.clinical.patients..cols..infiltrating.lobular.carcinoma",0.086476626778276
+"patient.breast_carcinoma_progesterone_receptor_statuspositive",0.0593482411515697
+"X.clinical.patients..cols..Stage.IIB",0.0483645845117028
+"X.clinical.patients..cols..medullary.carcinoma",0.019451827151467
+"X.clinical.patients..cols..Stage.IIA",0.0173886391270419
+"patient.breast_carcinoma_progesterone_receptor_statusnegative",0.0164072708677712

@@ -1,0 +1,11 @@
+"clinival_var","score_clini"
+"patient.genderfemale",0.37307
+"patient.breast_carcinoma_estrogen_receptor_statuspositive",0.37015
+"X.clinical.patients..cols..infiltrating.ductal.carcinoma",0.36968
+"patient.breast_carcinoma_progesterone_receptor_statuspositive",0.36645
+"HER2.Final.StatusNegative",0.36604
+"Node.CodedPositive",0.364
+"X.clinical.patients..cols..Stage.IIIA",0.34454
+"NA[3,10]",0.22759
+"NA(27,32]",0.12317
+"X.clinical.patients..cols..No_Conversion",0.015968

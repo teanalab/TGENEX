@@ -1,0 +1,11 @@
+"gene","geneScore"
+"Node.CodedPositive",1.30657871824543
+"X.clinical.patients..cols..Stage.IIIA",0.50143146789115
+"X.clinical.patients..cols..Stage.IIB",0.46239219388031
+"X.clinical.patients..cols..Stage.IIIC",0.127491856807918
+"patient.genderfemale",0.0822346089937707
+"Tumor.CodedT1",0.0762358677672408
+"HER2.Final.StatusEquivocal",0.0407829991447716
+"NA[3,10]",0.0305062271661898
+"X.clinical.patients..cols..Stage.IV",0.0145155451147156
+"NA(10,16]",0.0124073170110773
