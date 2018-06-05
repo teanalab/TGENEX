@@ -257,15 +257,17 @@ plotPAM504paper <- function(){
   test <- summary(coxFit_PAM50_surv_c_no_normal)
   ggsurvplot(mfit_PAM50_no_normal, conf.int = F, pval = test$sctest[3])
 
+  table(PAM50_surv_c$PAM50.Subtype)
 
-
-
+  setEPS()
+  postscript("output4paper/KM_standard_subtypes.eps", width = 12, height = 9)
   #tiff(file = "output4paper/KM_standard_subtypes.tiff",  width = 12, height = 9, units = 'in', res=300)
-  pdf( file = "output4paper/KM_standard_subtypes.pdf",  onefile = TRUE, width = 12, height = 9)
-  plot.Survival4paper(coxFit_PAM50_surv_c, mfit_PAM50_surv_c, location = "topright",
-                      colorsP = c("red","black","blue","#1E8449", "orange"),
-                      colorsL = c("#1E8449","blue","black","red", "orange"),
-                      labelClu = c("HER2-enriched (54)", "Luminal A (200)", "Luminal B (110)", "Normal-like (7)", "Basal-like (85)") )
+  #pdf( file = "output4paper/KM_standard_subtypes.pdf",  onefile = TRUE, width = 12, height = 9)
+  plot.Survival4paper(coxFit_PAM50_surv_c_no_normal, mfit_PAM50_no_normal, location = "topright",
+                      colorsP = c("red","black","blue","#1E8449" ),
+                      colorsL = c("#1E8449","blue","black","red" ),
+                      labelClu = c("Luminal B (110)", "Luminal A (200)",  "HER2-enriched (54)", "Basal-like (85)") )
+                      # font_size_times = 0.5)
   dev.off()
 }
 
@@ -350,7 +352,7 @@ removeUnwantedVars <- function(){
 
 
 #source
-plotAnyTopNTF <- function(threeGroups){ #survivalClinicalTop
+plotAnyTop <- function(threeGroups){ #survivalClinicalTop
   mfitTop <- survfit(Surv(time = Overall.Survival..Months.,
                           event = Overall.Survival.Status)~
                        factor(component),
@@ -387,13 +389,13 @@ plotAnyNTFforPaper <- function(threeGroups){
   dev.off()
 }
 
-coxfromGroupNTF <- function(Groups){
+coxfromGroup <- function(Groups){
   survivalgroup <- surCli[which(as.numeric(surCli$component) %in% Groups),]
   newInstruction <- try(coxFit_G <- coxph(Surv(time = Overall.Survival..Months.,
                              Overall.Survival.Status)~.,
                         data=survivalgroup), silent=TRUE )
   if( inherits(newInstruction, "try-error") ){
-    warning(paste("****** coxfromGroupNTF ****** G = (", Groups,")", collapse = " "))
+    warning(paste("****** coxfromGroup ****** G = (", Groups,")", collapse = " "))
     return(Inf)
   }
   test <- summary(coxFit_G)
@@ -402,17 +404,6 @@ coxfromGroupNTF <- function(Groups){
 
 ###
 
-plotAnyTopNMF <- function(threeGroups){
-  mfitTop <- survfit(Surv(time = Overall.Survival..Months., event = (Overall.Survival.Status=="DECEASED"))~
-                       factor(C),
-                     data=survivalClinicalTop)
-
-  coxFitTop <- coxph(Surv(time = Overall.Survival..Months., event = (Overall.Survival.Status=="DECEASED"))~
-                       factor(C),
-                     data=survivalClinicalTop)
-  print(summary(coxFitTop))
-  list(mfitTop,coxFitTop)
-}
 
 plotAnyNMFforPaper <- function(threeGroups){
   # pdf( file = "temp/79-kaplan-NMF4.pdf",  onefile = TRUE, width = 9, height = 7)
@@ -442,52 +433,6 @@ plotAnyNMFforPaper <- function(threeGroups){
   dev.off()
 }
 
-coxfromGroupNMF <- function(Groups){
-  survivalgroup <- surCli[which(surCli$C %in% Groups),]
-  coxFit_G <- coxph(Surv(time = Overall.Survival..Months.,
-                         event = (Overall.Survival.Status))~
-                      factor(c),
-                    data=survivalgroup)
-  test <- summary(coxFit_G)
-  test$sctest[3]
-}
-
-best4NMF <- function(){
-  surCli = patiAfi_NMF_mut
-  #table(surCli$component)
-  # factor 'C'
-  combi4 <- combn(kMax,4)
-  allPvals4 <- lapply(c(1:dim(combi4)[2]),
-                      function(x){
-                        coxfromGroupNTF(combi4[,x])})
-  minpos <-which.min(unlist(allPvals4))
-  min(unlist(allPvals4))
-  bc4 = combi4[,minpos]
-  minpos
-  bc4
-  # > minpos
-  # pvalue
-  # 34
-  # >   min(unlist(allPvals4))
-  # [1] 0.002959696
-  # >   bc4 = combi4[,minpos]
-  # >   bc4
-  # [1] 3 5 6 7
-
-  count(surCli[which(surCli$component %in% bc4),]$component)
-  survivalClinicalTop <- surCli[which(as.numeric(surCli$component) %in% bc4),]
-  testPlot4t <- plotAnyTopNTF(bc4)
-  mfitTop = testPlot4t[[1]]
-  coxFitTop = testPlot4t[[2]]
-
-  test <- summary(coxFitTop)
-  ggsurvplot(mfitTop, conf.int = F,pval = test$sctest[3] )
-
-  plotAnyNMFforPaper(threeGroups)
-
-}
-
-###
 
 plotAnyNMFforPaper_clini <- function(threeGroups){
   # pdf( file = "temp/79-kaplan-NMF4.pdf",  onefile = TRUE, width = 9, height = 7)
@@ -527,7 +472,7 @@ best_X_KM <- function(surCli){
   combi4 <- combn(kMax,X)
   allPvals4 <- lapply(c(1:dim(combi4)[2]),
                       function(x){
-                        coxfromGroupNTF(Groups=combi4[,x])})
+                        coxfromGroup(Groups=combi4[,x])})
   minpos <- which.min(unlist(allPvals4))
   bc4 = combi4[,minpos]
   minpos
@@ -536,7 +481,7 @@ best_X_KM <- function(surCli){
   count(surCli[which(surCli$component %in% bc4),]$component)
 
   survivalClinicalTop <- surCli[which(surCli$component %in% bc4),]
-  testPlot4t <- plotAnyTopNTF(bc4)
+  testPlot4t <- plotAnyTop(bc4)
   mfitTop = testPlot4t[[1]]
   coxFitTop = testPlot4t[[2]]
   test <- summary(coxFitTop)

@@ -42,16 +42,18 @@ rm(list = ls())
   data10 <- rbind(AUCvsK_103_NTF,AUCvsK_104_NMF_clini,AUCvsK_104_NMF,randomAUC_)
 
   #With clinical data
+  ggsave("output4paper/AUC.eps", width = 8, units = "in") #height = 20,
   theme_set(theme_light(base_size = 18))
   g1 <- ggplot(data10, aes(x=k, y=auc, colour=method, shape=method, fill=method)) +
     geom_line(linetype="dashed") +
-    xlab("# of most prevalent subtypes") +
+    # xlab("# of most prevalent subtypes") +
+    xlab("number of sub-types") +
     ylab("AUC") +
     geom_point(size=5) +
     # Remove title for all legends
     theme(legend.title=element_blank())
   g1
-
+  #A4 8.5 inch x 11 inch
   ##Export png 700 x 380  for paper as Figure7.png
   #Export PDF 8 x 5 inches for email
 #}

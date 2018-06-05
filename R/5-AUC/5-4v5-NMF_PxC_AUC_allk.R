@@ -133,4 +133,5 @@ NMF_PxM_AUC <- function()
 }
 
 sess <- sessionInfo() #save session on variable
-save.image("temp/5-4v5.RData")
+# save.image("temp/5-4v5.RData")
+load("temp/5-4v5.RData")

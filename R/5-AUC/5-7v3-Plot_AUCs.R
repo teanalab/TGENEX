@@ -12,7 +12,7 @@ rm(list = ls())
   load("data/myLib.RData")
   loadlib("ggplot2",F)
 
-  kMax=12
+  kMax=length(NTF_AUC)
   interval = c(2:kMax)
 
   x = as.data.frame(NTF_AUC[interval])
@@ -40,16 +40,18 @@ rm(list = ls())
 #WithRandomAsBaseline <- function(){
   data10 <- rbind(NTF_AUC_,NMF_PxM_AUC_, NMF_PxC_AUC_, randomAUC_)
 
-  #With clinical data
+  ggsave("output4paper/AUC.eps", width = 8, units = "in")
   theme_set(theme_light(base_size = 18))
   g1 <- ggplot(data10, aes(x=k, y=auc, colour=method, shape=method, fill=method)) +
     geom_line(linetype="dashed") +
-    xlab("number of breast cancer subtypes") +
+    # xlab("number of breast cancer subtypes") +
+    # xlab("number of sub-types") +
     ylab("AUC") +
     geom_point(size=3) +
     # Remove title for all legends
     theme(legend.title=element_blank())
-  g1
+  g1 + scale_x_continuous(name="number of sub-types", breaks = (2:kMax))
+  #http://www.sthda.com/english/wiki/ggplot2-axis-ticks-a-guide-to-customize-tick-marks-and-labels
 
   ##Export png 700 x 380  for paper as Figure7.png
   #Export PDF 8 x 5 inches for email

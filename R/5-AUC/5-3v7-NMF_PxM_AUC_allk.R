@@ -130,10 +130,8 @@ NMF_PxM_AUC <- function()
   save(NMF_PxM_Cstat, file =  paste(folderOutput, "Cstat.RData", sep='') )
   save(NMF_PxM_logRank, file = paste(folderOutput, "logRank.RData", sep='') )
   save(NMF_PxM_logRank_train, file = paste(folderOutput, "logRank_train.RData", sep='') )
-
-
-
 }
 
 sess <- sessionInfo() #save session on variable
-save.image("temp/5-3v7.RData")
+#save.image("temp/5-3v7.RData")
+load("temp/5-3v7.RData")

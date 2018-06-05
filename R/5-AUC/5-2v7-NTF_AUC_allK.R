@@ -15,14 +15,12 @@ LoadMyData <- function(){
 }
 
 
-#k=15
-
 NTF_AUC <- function()
 {
   prefixPatAfilFile <- "data/patientAfiliation/patientAfiliation_"
   ouputFileEachK <- "temp/5-2v5-AUC_NTF_k"
   folderOutput <- "output4paper/NTF_"
-  kMax=30
+  kMax=12
   numSplits = 10
   AUC_CD_all <- rep(list(),kMax)
   Cstat_allK <- rep(list(),kMax)
@@ -143,5 +141,6 @@ NTF_AUC <- function()
   save(NTF_logRank_train, file = paste(folderOutput, "logRank_train.RData", sep='') )
 }
 
-# sess <- sessionInfo() #save session on variable
-# save.image("temp/5-2v6.RData")
+ sess <- sessionInfo() #save session on variable
+# save.image("temp/5-2v7.RData")
+load("temp/5-2v7.RData")
