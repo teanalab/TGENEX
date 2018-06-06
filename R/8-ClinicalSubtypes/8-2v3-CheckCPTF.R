@@ -3,8 +3,6 @@
 #' Check if the subtypes obtained from 8.1 match anything that we got from CP TF
 
 rm(list = ls())
-load(file="results/10March2018/8.0data.RData")
-loadls("plyr xtable", FALSE)
 load("data/myLib.RData")
 load("temp/6-4v1.RData")
 library("caret")
