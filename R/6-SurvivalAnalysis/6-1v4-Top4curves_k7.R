@@ -22,16 +22,6 @@ LoadMyData <- function()
 load("temp/6-1v4-data.RData")
 loadls("plyr survival missForest survAUC prodlim survminer", F)
 
-# k = 7
-# table(patientAfiliation$component)
-# 1   2   3   4   5   6
-# 4  10   4 302   7 129
-
-# k = 12
-# 1   2   3   4   5   6   7   9  10  11  12
-# 283  13   3  13  32  21   7  46  13  20   5
-
-
 survivalAnalysisNTF <- function(patiAfi_NTF){
   ### by score
   patiFact_NTF <- patientsF
@@ -133,9 +123,6 @@ survivalAnalysisNMF_Mut <- function(patiAfi_NTF){
   save.image("temp/6-1v4-survNMF_mut.RData")
 }
 #load("temp/6-1v4-survNMF_mut.RData")
-# table(patientAfiliation$component)
-# 1   2   3   4   5   6   7
-# 31  85   9 137  26   9 159
 
 survivalAnalysisNMF_Clini <- function(patiAfi_NTF){
   load("data/patientA_NMF_C/patientA_NMF_C_7.RData")
@@ -182,9 +169,6 @@ survivalAnalysisNMF_Clini <- function(patiAfi_NTF){
   save.image("temp/6-1v4-survNMF_clin.RData")
 }
 #load("temp/6-1v4-survNMF_clin.RData")
-# table(patientAfiliation$component)
-# 1   2   3   4   5   6   7
-# 49 152  47  32  59  17 100
 
 #' Survival Analysis
 survAna <- function(){
@@ -480,9 +464,7 @@ plotAnyNMFforPaper_clini <- function(threeGroups){
 
 best_X_KM <- function(surCli){
   X <- 5
-  surCli = patiAfi_NTF  #NTF
-  #surCli = patiAfi_NMF_mut  #mutation
-  #surCli = patiAfi_NMF_clin  #clinical
+  surCli = patiAfi
   #table(surCli$component)
   combi4 <- combn(kMax,X)
   allPvals4 <- lapply(c(1:dim(combi4)[2]),
@@ -508,7 +490,7 @@ best_X_KM <- function(surCli){
 
 
   plotAnyNTFforPaper(threeGroups)
+  #, font_size_times = 0.5
 }
 
 
-#save.image("temp/79.RData")
