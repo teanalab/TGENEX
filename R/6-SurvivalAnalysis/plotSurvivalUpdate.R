@@ -323,19 +323,19 @@ plot.Survival4paper <- function(coxFit, mfit, mainTitle=NULL,
                                 colorsL = c("red","black","blue"),
                                 labelClu = c("group1","group2", "group3"),
                                 centerT = 0.4,
-                                legendTitle = "p-value =",
+                                legendTitle = "log-rank p-value =",
                                 font_size_times = 1.3)
 {
   require("survival")
   par( mgp=c(1.8,0.3,0), #axis title, axis labels and axis line
-       mai=c(2.0,2.0,1.0,1.0) ) #c(bottom, left, top, right)
+       mai=c(0.7,0.7,0.5,0.5) ) #c(bottom, left, top, right)
   print(summary(coxFit))
   resCox <- summary(coxFit)
   pVal<-format.pval(resCox$sctest[3], digits = 3)
   plot(mfit,
        col=colorsP,
        lty = 1, #line type solid
-       lwd=5, #line tightness
+       lwd=4, #line tightness
        #main = mainTitle,
        cex.lab=font_size_times, #font size
        #xaxt="n", #do not plot x axe
