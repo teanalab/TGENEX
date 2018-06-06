@@ -10,7 +10,7 @@ ggsurvplot(mfitTop, conf.int = F,pval = test$sctest[3], risk.table = T )
 table(surCli[which(as.numeric(surCli$component) %in% bc4),"component"])
 
 setEPS()
-postscript("output4paper/KM_top5_NMF_mut.eps", width = 12, height = 9)
+postscript("output4paper/KM_top5_NMF_cli.eps", width = 12, height = 9)
 plot.Survival4paper(coxFit_Afi_NMF_clin, mfitTop, location = "bottomleft",
                     colorsP = c("red","black","blue","#1E8449", "orange"),
                     colorsL = c("blue","#1E8449","red","black", "orange"),
