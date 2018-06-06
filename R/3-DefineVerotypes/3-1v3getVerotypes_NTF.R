@@ -21,7 +21,8 @@ projection <- function() {
   table2paper <- rbind(percenPatients,percenGenes,percenClini)
   table2paper <- t(table2paper)
   table2paper <- round(table2paper, 5)
-  table2paper <- cbind(component=paste("Component", c(1:10)), table2paper)
+  table2paper <- cbind(component=paste("Component", c(1:k)),
+                       table2paper)
 
   write.csv2(table2paper, file = "output4paper/table2.csv",row.names = FALSE)
 
