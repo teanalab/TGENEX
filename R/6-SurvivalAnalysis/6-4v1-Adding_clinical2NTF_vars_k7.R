@@ -38,8 +38,8 @@ patiAfi_NTF_and_cliniVars <- merge( as.data.frame(patiAfi_NTF),as.data.frame(ten
 patiAfi_NTF_and_cliniVars <- patiAfi_NTF_and_cliniVars[,-1]
 coxFit_tensorClini <- coxph(Surv(time = Overall.Survival..Months.,
                                  event = Overall.Survival.Status)~
-                              factor(component)+
-                              patient.age_at_initial_pathologic_diagnosis+
+                             factor(component)+
+                              as.numeric(as.character(patient.age_at_initial_pathologic_diagnosis))+
                               Node.Coded+
                               Tumor+
                               HER2.Final.Status+
