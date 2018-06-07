@@ -44,7 +44,8 @@ coxFit_tensorClini <- coxph(Surv(time = Overall.Survival..Months.,
                               Tumor+
                               HER2.Final.Status+
                               patient.breast_carcinoma_estrogen_receptor_status+
-                              patient.breast_carcinoma_progesterone_receptor_status,
+                              patient.breast_carcinoma_progesterone_receptor_status+
+                              Converted.Stage,
                             x=T, y=T, model=T, method = "breslow",
                             data=patiAfi_NTF_and_cliniVars)
 summary(coxFit_tensorClini)
@@ -65,12 +66,13 @@ table(patiAfi_NTF_and_cliniVars$Converted.Stage)
 coxFit_tensorClini <- coxph(Surv(time = Overall.Survival..Months.,
                                  event = Overall.Survival.Status)~
                               factor(component)+
-                              patient.age_at_initial_pathologic_diagnosis+
+                              as.numeric(as.character(patient.age_at_initial_pathologic_diagnosis))+
                               Node.Coded+
                               Tumor+
                               HER2.Final.Status+
                               patient.breast_carcinoma_estrogen_receptor_status+
-                              patient.breast_carcinoma_progesterone_receptor_status,
+                              patient.breast_carcinoma_progesterone_receptor_status+
+                              Converted.Stage,
                             x=T, y=T, model=T, method = "breslow",
                             data=patiAfi_NTF_and_cliniVars)
 summary(coxFit_tensorClini)
