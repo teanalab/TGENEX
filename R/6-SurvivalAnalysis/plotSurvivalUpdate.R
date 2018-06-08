@@ -323,7 +323,7 @@ plot.Survival4paper <- function(coxFit, mfit, mainTitle=NULL,
                                 colorsL = c("red","black","blue"),
                                 labelClu = c("group1","group2", "group3"),
                                 centerT = 0.4,
-                                legendTitle = "log-rank p-value =",
+                                legendTitle = "p-value =",
                                 font_size_times = 1.3)
 {
   require("survival")
