@@ -7,6 +7,7 @@
 ######### start here ----
 rm(list = ls())
 
+#source
 readFiles <- function(){
   dataFile <- "temp/1-2v3data.RData"
   #file.remove(dataFile)
@@ -36,7 +37,7 @@ readFiles <- function(){
   }
 }
 
-#run one by one
+#source
 createBoolMutation <- function(){
   dataFile = "data/boolMutation.RData"
   if( file.exists(dataFile) ){
@@ -275,7 +276,7 @@ dichoSeveralCols <-function(cols)
 classesSturges <- function(colId)
 {
   require(classInt)
-  aInt <- classIntervals(as.numeric(clinical[patients,colId]), style = "jenks")
+  aInt <- classIntervals(as.numeric(as.character(clinical[patients,colId])), style = "jenks")
   aCategory <- findCols(aInt)
 
   ##Recode categories to columns
@@ -337,7 +338,8 @@ createBoolClinical <-function(){
   #142 NA values mapped as non-hispanic because of the country of sample (germany, NA, poland, united states, vietnam)
   patient.ethnicity = clinical[,"patient.ethnicity"]
   patient.ethnicity [which(is.na(patient.ethnicity)) ] = "not hispanic or latino"
-  table(patient.ethnicity)
+  table(patient.ethnicity, useNA = "ifany" )
+  anyNA(patient.ethnicity)
   clinical[,"patient.ethnicity"] = patient.ethnicity
 
   #Node.Coded
@@ -355,7 +357,7 @@ createBoolClinical <-function(){
   }
 
   deletepatients(toDelete)
-  table(Node.Coded)
+  table(clinical$Node.Coded,useNA = "ifany" )
 
 
   #Metastasis.Coded
@@ -386,13 +388,13 @@ createBoolClinical <-function(){
 
   #4 level columns-----------------
   cols4 <- which(NumVals==4)
-  ncols <- names(cols4)
-  # [1] "patient.breast_carcinoma_estrogen_receptor_status"
-  table(clinical[,ncols[1]])
-  # [2] "patient.breast_carcinoma_progesterone_receptor_status"
-  table(clinical[,ncols[2]])
-  # [3] "HER2.Final.Status"
-  table(clinical[,ncols[3]])
+  # ncols <- names(cols4)
+  # # [1] "patient.breast_carcinoma_estrogen_receptor_status"
+  # table(clinical[,ncols[1]])
+  # # [2] "patient.breast_carcinoma_progesterone_receptor_status"
+  # table(clinical[,ncols[2]])
+  # # [3] "HER2.Final.Status"
+  # table(clinical[,ncols[3]])
 
 
   # [1] "patient.breast_carcinoma_estrogen_receptor_status"
@@ -429,28 +431,28 @@ createBoolClinical <-function(){
   #7 levels -----------------
   NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
   colsN <- which(NumVals==7)
-  ncols <- names(colsN)
-  # [1] patient.histological_type"
-  anyNA(clinical[,ncols[1]])
-  names(table(clinical[,ncols[1]]))
+  # ncols <- names(colsN)
+  # # [1] patient.histological_type"
+  # anyNA(clinical[,ncols[1]])
+  # names(table(clinical[,ncols[1]]))
 
 
   #1 NA, got rid of patient
   patient.histological_type = clinical[,"patient.histological_type"]
   toDelete <- which(is.na(patient.histological_type))
-  deletepatients(toDelete)
-  anyNA(clinical[,ncols[1]])
-  names(table(clinical[,ncols[1]]))
+  # deletepatients(toDelete)
+  # anyNA(clinical[,ncols[1]])
+  # names(table(clinical[,ncols[1]]))
 
 
   #Do like it has 6 levels
-  matDich6 <- dichoSeveralCols(ncols[1])
+ # matDich6 <- dichoSeveralCols(ncols[1])
 
   #8 levels -----------------
   NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
   colsN <- which(NumVals==8)
   ncols <- names(colsN)
-  names(table(clinical[,ncols[1]]))
+  names(table(clinical[,ncols[1]], useNA = "ifany"))
   anyNA(clinical[,ncols[1]])
 
   #Do like it has N levels
@@ -459,10 +461,10 @@ createBoolClinical <-function(){
   ### CONCATENATE ALL nominal
   matDich2 <- matDich2[patients,]
   matDich3 <- matDich3[patients,]
-  matDich6 <- matDich6[patients,]
+  #matDich6 <- matDich6[patients,]
   matDich8 <- matDich8[patients,]
 
-  conc1 <- cbind(matDich2, matDich3, matDich6,
+  conc1 <- cbind(matDich2, matDich3, #matDich6,
                  matDich8)
 
   #5- add other columns, one by one --------
@@ -470,9 +472,18 @@ createBoolClinical <-function(){
   #using Sturges
   ##2	Diagnosis.Age
   C <- "patient.age_at_initial_pathologic_diagnosis"
-  aCOl <- as.numeric(clinical[patients,C])
-  range(aCOl)
+  aCOl <- as.numeric(as.character(clinical[patients,C]))
+  range(aCOl) #29 89
   aMat <- classesSturges(C)
+
+#   style: jenks
+#   one of 8,996,462,475 possible partitions of this variable into 10 classes
+#   [3,10] (10,16] (16,22] (22,27] (27,32] (32,37] (37,42] (42,48] (48,54] (54,60]
+#     25      46      52      63      56      74      59      32      32      17
+#   [29,37] (37,43] (43,49] (49,54] (54,59] (59,64] (64,70] (70,76] (76,82] (82,89]
+#     25      46      52      63      56      74      65      33      29      13
+
+  aMatNew  <- classesSturges(C)
 
   #to Logical
   aMati <- as.data.frame(lapply(aMat, as.logical))

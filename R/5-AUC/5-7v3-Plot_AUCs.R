@@ -56,3 +56,6 @@ rm(list = ls())
   ##Export png 700 x 380  for paper as Figure7.png
   #Export PDF 8 x 5 inches for email
 #}
+
+  which.max(NTF_AUC_$auc)
+  max(NTF_AUC_$auc)

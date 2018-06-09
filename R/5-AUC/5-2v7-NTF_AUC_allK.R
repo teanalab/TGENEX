@@ -3,6 +3,7 @@
 
 rm(list = ls())
 load(file="temp/5-2v6-data.RData")
+load("data/myLib.RData")
 loadls("plyr survival Rcpp survAUC perry",F)
 
 LoadMyData <- function(){
@@ -128,7 +129,7 @@ NTF_AUC <- function()
     AUC_CD_all[k] = list(AUC_CD_K)
     Cstat_allK[k] <- list(Cstat_K)
     LogrankP_allK_train[k] <- list(LogrankP_K)
-    save.image(paste(ouputFileEachK,k,".RData",sep=''))
+    #save.image(paste(ouputFileEachK,k,".RData",sep=''))
   }
 
   NTF_AUC <- AUC_CD_all
