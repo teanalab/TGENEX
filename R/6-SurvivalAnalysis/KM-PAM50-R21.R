@@ -54,7 +54,7 @@ setEPS()
 postscript("output4paper/KM_standard_subtypes.eps", width = 12, height = 9)
 #tiff(file = "output4paper/KM_standard_subtypes.tiff",  width = 12, height = 9, units = 'in', res=300)
 #pdf( file = "output4paper/KM_standard_subtypes.pdf",  onefile = TRUE, width = 12, height = 9)
-plot.Survival4paper(coxFit_PAM50_surv_c_no_normal, mfit_PAM50_no_normal, location = "topright",
+plot.Survival4paper(coxFit_PAM50_surv_c_no_normal, mfit_PAM50_no_normal, location = "bottomleft",
                     colorsP = c("red","black","blue","#1E8449" ),
                     colorsL = c("#1E8449","blue","black","red" ),
                     labelClu = c("Luminal B (110)", "Luminal A (200)",  "HER2-enriched (54)", "Basal-like (85)") )
