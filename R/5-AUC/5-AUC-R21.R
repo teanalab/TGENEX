@@ -43,11 +43,11 @@ rm(list = ls())
   ggsave("output4paper/AUC.eps", width = 8, units = "in")
   theme_set(theme_light(base_size = 18))
   g1 <- ggplot(data10, aes(x=k, y=auc, colour=method, shape=method, fill=method)) +
-    geom_line(linetype="dashed") +
+    geom_line(linetype="solid") +
     # xlab("number of breast cancer subtypes") +
     # xlab("number of sub-types") +
-    ylab("time-dependent AUC") +
-    geom_point(size=3) +
+    ylab("AUC") +
+    geom_point(size=4) +
     # Remove title for all legends
     theme(legend.title=element_blank()) +
     theme(legend.position = c(0.885,0.14)) +
