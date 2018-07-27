@@ -78,11 +78,11 @@ survAna <- function(){
 
 LoadMyDataSeveralKs <- funtion()
 {
-  clustersNBSks <- data.frame(patients, matrix(NA,nrow=length(patients), ncol = 12))
+  clustersNBSks <- data.frame(patients, matrix(NA,nrow=length(patients), ncol = 13))
 
   clustersNBSks[,2] <- unlist(clustersNBS)
 
-  for (i in c(3:13)) {
+  for (i in c(3:14)) {
     fileName <- paste("nbs_release_v0.2/BCRAdata/output_clustersNBS_k",i+1,".csv",sep='')
     clustersNBSks[,i] <-read.table(file=fileName, sep = "\t", quote = "",
                                header = FALSE, stringsAsFactors = FALSE)
@@ -100,7 +100,23 @@ survAnaDifferentKs <- function(){
   figureKs <- "temp/SA_NBS_ks"
   #dir.create(figureKs)
 
-  for (i in c(2:13)) {
+  #better colors
+  c25 <- c("dodgerblue2","#E31A1C", # red
+          "green4",
+          "#6A3D9A", # purple
+          "#FF7F00", # orange
+          "black","gold1",
+          "skyblue2","#FB9A99", # lt pink
+          "palegreen2",
+          "#CAB2D6", # lt purple
+          "#FDBF6F", # lt orange
+          "gray70", "khaki2",
+          "maroon","orchid1","deeppink1","blue1","steelblue4",
+          "darkturquoise","green1","yellow4","yellow3",
+          "darkorange4","brown")
+  pie(rep(1,25), col=c25)
+
+  for (i in c(2:14)) {
     rm(list=ls()[which(ls() %in% c("SurFunction", "coxFit_NBS", "mfit" ))])
     clustersNBSi <- clustersNBSks[,i]
     patiFi <- data.frame(patients,clustersNBSi)
@@ -119,9 +135,10 @@ survAnaDifferentKs <- function(){
     pdf( file = paste0(figureKs,"/kaplan-NBS",(i+1),".pdf"),  onefile = TRUE, width = 9, height = 7)
     #tiff(file = "temp/79-kaplan-NMF4_num.tiff",  width = 9, height = 7, units = 'in', res=300)
     plot.Survival4paper(coxFit_NBS, mfit, location = "bottomleft",
-                        colorsP = c("red","black","blue"),
-                        colorsL = c("blue","black","red"),
-                        labelClu = c("subtype 1","subtype 2", "subtype 3") )
+                        colorsP = c25[1:(i+1)],
+                        colorsL = c25[1:(i+1)],
+                        labelClu = paste("subtype ", c(1:(i+1)) ),
+                        font_size_times = 1)
     dev.off()
   }
 }
