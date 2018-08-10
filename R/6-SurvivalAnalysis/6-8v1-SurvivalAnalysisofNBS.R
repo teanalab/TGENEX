@@ -100,6 +100,17 @@ survAnaDifferentKs <- function(){
   figureKs <- "temp/SA_NBS_ks"
   #dir.create(figureKs)
 
+  #colorblind palette
+  # library("ggplot2")
+  # library("scales")
+  # library("ggthemes")
+  # show_col(colorblind_pal()(8))
+  # p <- ggplot(mtcars) + geom_point(aes(x = wt, y = mpg,
+  #                                      colour = factor(gear))) + facet_wrap(~am)
+  # p + theme_igray() + scale_colour_colorblind()
+  # https://rdrr.io/cran/ggthemes/man/colorblind.html
+
+
   #better colors
   c25 <- c("dodgerblue2","#E31A1C", # red
           "green4",
