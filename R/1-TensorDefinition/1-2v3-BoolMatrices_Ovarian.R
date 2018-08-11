@@ -8,7 +8,6 @@
 rm(list = ls())
 
 
-
 ######### mutation ----
 source('~/CLIGEN_tgit/R/1-TensorDefinition/createBoolMutation.R')
 
