@@ -181,3 +181,11 @@ save(treatClinical, file="data/treatClinical.RData")
 
 save.image(file = "temp/1-1.2.RData")
 #load(file = "temp/1-1.2.RData")
+
+########## more info ----------
+#this also looks cool https://cran.r-project.org/web/packages/Gmisc/vignettes/Descriptives.html
+
+
+
+
+

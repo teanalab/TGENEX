@@ -13,7 +13,7 @@
 #'     genes <- names(boolMutation)
 #'     patients <- row.names(boolMutation)
 #'     save(boolMutation,patients, file="temp/boolMutation_OVA.RData")
-createBoolMutation <- function(fileName, minNumMutation = NA){
+createBoolMutation <- function(fileName, minNumMutation = NA, boolOrBin="bool"){
   mutation<-read.table(file = fileName, sep = "\t", quote = "",
                        header = TRUE, stringsAsFactors = FALSE, skip = 1, skipNul = TRUE, blank.lines.skip = TRUE)
 
@@ -25,8 +25,18 @@ createBoolMutation <- function(fileName, minNumMutation = NA){
   patients <- unique(mutationBarcodes)
 
   genes <- unique(as.character(mutation$Hugo_Symbol))
-  boolMutation <- data.frame(matrix(FALSE,length(patients),length(genes)),
-                             row.names = patients)
+
+
+  if(boolOrBin == "bool")
+  {
+    boolMutation <- data.frame(matrix(FALSE,length(patients),length(genes)),
+                               row.names = patients)
+    trueVal = TRUE
+  } else{
+    boolMutation <- data.frame(matrix(0,length(patients),length(genes)),
+                               row.names = patients)
+    trueVal = 1
+  }
   names(boolMutation) <- genes
 
   for(i in seq_len(dim(mutation)[1])){
@@ -36,7 +46,7 @@ createBoolMutation <- function(fileName, minNumMutation = NA){
       TMuta <- unique(mutation$Variant_Classification[i])
       if(TMuta != "Silent"){
         APgene <- mutation$Hugo_Symbol[i]
-        boolMutation[Apatient,APgene] <- TRUE
+        boolMutation[Apatient,APgene] <- trueVal
       }
     }
   }

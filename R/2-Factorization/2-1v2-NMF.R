@@ -13,9 +13,9 @@ libs<-c("Packages.R", "survival_analysis.R")
 libs<-paste("https://gist.githubusercontent.com/datad/39b9401a53e7f4b44e9bea4d584ac3e8/raw/", libs,sep='')
 sapply(libs, function(u) {source(u)})
 
-save.image("data/myLib.RData")
+save.image("data/BC/myLib.RData")
 
-load("data/boolMutation.RData")
+load("data/BC/boolMutation.RData")
 
 loadls("plyr survival lmtest", T)
 loadls("stats registry", T)
@@ -34,9 +34,12 @@ loadlib("NMF", T) #For non-negative matrix factorization
 # meth <- c(names(meth), meth)
 # meth
 
-rankNMF <- 31
+rankNMF <- 10
 
 res <- nmf(boolMutation, rankNMF, "snmf/l", seed = 123456)
+
+
+
 
 # get matrix W
 w <- basis(res)
@@ -106,3 +109,9 @@ save(patientAfiliationNMF_PxC, patientNMF_PxC, mutationNMF_PxC,
 
 sess <- sessionInfo() #save session on variable
 save.image(file="temp/2-1v2_30_NMFs.RData")
+
+
+
+
+###### old stuff -----
+

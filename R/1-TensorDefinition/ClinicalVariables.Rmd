@@ -1,0 +1,72 @@
+---
+title: "Clinical variables to search for"
+output: html_notebook
+---
+
+
+List of biomarkers:
+
+1.    Demographics and clinical history:
+•    Age
+•    Sex
+•    Race
+•    BMI
+•    Prior cancer history
+•    Family history of cancer
+•    Diagnosis of diabetes
+•    Menstrual status
+
+2. Histopathology results:
+•    Tumor size
+•    Histology designations
+•    Tumor grade
+•    Cancer stage
+•    Lymph node stage
+•    Metastasis stage
+
+3. Test results for molecular markers or their immunohistochemistry 
+surrogates:
+•    EGFR protein
+•    Cytokeratin 5/6 (CK 5/6)
+•    ER/PR
+•    HER1
+•    HER2
+•    TP53
+•    CA-125
+•    Prostate-specific antigen (PSA)
+•    KRAS
+•    ERBB2
+•    UGT-1A
+•    EML4
+•    ALK
+•    BRCA
+
+4. Clinical events related to cancer treatment, survival and outcomes:
+•    Surgery
+•    Chemotherapy (including prescribed medication)
+•    Radiation therapy
+•    Cancer recurrence
+•    Patient death
+
+
+
+
+
+
+
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

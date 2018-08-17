@@ -47,11 +47,11 @@ plot.SurvivalComplex <- function(coxFit, mfit, mainTitle)
   #                 data = survData, ties="exact")
   # print(summary(coxFit))
 
-  resCox <- mySumm(coxFit)
+  resCox <- summary(coxFit)
 
-  pVal<-format.pval(resCox$sctest[3], digits = 3)
+  pVal<-format.pval(resCox$logtest[3], digits = 3)
 
-  plot(mfit, col=rainbow(resCox$sctest[2]),
+  plot(mfit, col=rainbow(resCox$logtest[2]+1),
        #lty = 1, #line type solid
        #lwd=5, #line tightness
        #main = mainTitle,
@@ -283,12 +283,12 @@ plotCompleteKplan <- function (groups, survivalData, resultsFolder=getwd(), pdfN
   km0 <- prodlim(Hist(time = Survival, event = Death) ~ groups,
                  data = survivalData)
 
-pdf( file = paste(resultsFolder, pdfName1 , sep = ""),  onefile = TRUE,
-      width = 9, height = 7)
+  pdf( file = paste(resultsFolder, pdfName1 , sep = ""),  onefile = TRUE,
+       width = 9, height = 7)
 
   plot(km0
        ,
-        atrisk.labels=paste("Tumor grade: ",c("I","II","III"),": "),
+       atrisk.labels=paste("Tumor grade: ",c("I","II","III"),": "),
        atrisk.title="",
 
        xlab="Years",  # label for x-axis
@@ -298,7 +298,7 @@ pdf( file = paste(resultsFolder, pdfName1 , sep = ""),  onefile = TRUE,
        legend.cex=0.8, # font size of legend
        legend.title="\n", #
        logrank=FALSE
-    ) # show log-rank p-value
+  ) # show log-rank p-value
 
   dev.off()
 }
@@ -355,8 +355,8 @@ plot.Survival4paper <- function(coxFit, mfit, mainTitle=NULL,
   if(!is.null(mainTitle))
   {
     title(mainTitle, line = 0.5,
-        adj=centerT, #centers the titles (0 left - 1 right)
-        cex.main=(font_size_times+0.3))
+          adj=centerT, #centers the titles (0 left - 1 right)
+          cex.main=(font_size_times+0.3))
   }
 
   if(is.null(labelClu))
@@ -368,16 +368,16 @@ plot.Survival4paper <- function(coxFit, mfit, mainTitle=NULL,
            title = paste(legendTitle, pVal) ,
            title.col="black")
   } else {
-  #   axis(1, at = seq(0, max(survData$Survival), length.out = 15),
-  #       labels=round(seq(0, 4.1, length.out = 15), digits=1), las=1) #customize x axe
-  legend(location,
-         labelClu,
-         col=colorsL,
-         text.col=colorsL,
-         text.font=2, #bold
-         fill=colorsL, #boxes
-         cex=font_size_times,
-         title = paste(legendTitle, pVal),
-         title.col="black")
+    #   axis(1, at = seq(0, max(survData$Survival), length.out = 15),
+    #       labels=round(seq(0, 4.1, length.out = 15), digits=1), las=1) #customize x axe
+    legend(location,
+           labelClu,
+           col=colorsL,
+           text.col=colorsL,
+           text.font=2, #bold
+           fill=colorsL, #boxes
+           cex=font_size_times,
+           title = paste(legendTitle, pVal),
+           title.col="black")
   }
 }
