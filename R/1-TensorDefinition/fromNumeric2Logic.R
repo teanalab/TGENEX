@@ -21,3 +21,22 @@ fromNumeric2Logic <- function(aDataFrame)
   bDataFrame
 }
 
+
+#' from Numeric to Logic
+#'
+#' @param aDataFrame
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' boolMutation <- fromNumeric2Logic(boolMutation)
+fromNumeric2LogicFast <- function(aDataFrame)
+{
+  bDataFrame <- as.data.frame(lapply(aDataFrame, as.logical), stringsAsFactors = FALSE)
+  row.names(bDataFrame) <- row.names(aDataFrame)
+  names(bDataFrame) <- names(aDataFrame)
+  bDataFrame
+}
+
+

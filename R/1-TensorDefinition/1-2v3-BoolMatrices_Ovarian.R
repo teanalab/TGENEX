@@ -82,22 +82,39 @@ NBSpatients <- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_
 NBSgenes <- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_genes_raw.csv",
                        sep = "\t", quote = "'", header = FALSE, stringsAsFactors = FALSE)
 
-
+NBSpatients <- gsub(',','',as.character(unlist(NBSpatients)))
+NBSpatients <- tolower(NBSpatients)
 sum(NBSboolMutation)
 max(NBSboolMutation)
 boolMutation <- NBSboolMutation
-row.names(boolMutation)  <- as.character(unlist(NBSpatients))
+row.names(boolMutation)  <- NBSpatients
 names(boolMutation) <- as.character(unlist(NBSgenes))
 
+
+#Number of patients with mutation x
+pat4genes <- apply(boolMutation,2,sum)
+#Genes to remove
+if ( length(which(pat4genes<=0)) > 0 ){
+  boolMutation <- boolMutation[,-which(pat4genes<=0)]
+}
+
+
+x<-apply(boolMutation,2,sum)
+min(x)
+# source("R/1-TensorDefinition/fromLogic2Numeric.R")
+# binaMutation <- fromLogic2Numeric(boolMutation)
+binaMutation <- boolMutation
+anyNA(binaMutation)
+save(binaMutation, file="data/binaMutation.RData")
+
+patients <- NBSpatients
+save(patients, file="data/patients.Rd")
+
 source("R/1-TensorDefinition/fromNumeric2Logic.R")
-boolMutation <- fromNumeric2Logic(boolMutation) #takes time
-
-
-
+boolMutation <- fromNumeric2LogicFast(boolMutation)
+anyNA(boolMutation)
+save(boolMutation, file="data/boolMutation.Rd")
 #boolMutation[1:5,1:5]
-
-
-
 
 
 # RTGCA -----------
@@ -132,7 +149,7 @@ load("loadls.RData")
 loadls("RTCGA")
 data(OV.clinical)
 names(OV.clinical)
-
+load(file="data/patients.Rd")
 
 names(OV.clinical)[10:20]
 clinicalOV <- OV.clinical[which(OV.clinical[,"patient.bcr_patient_barcode"] %in% as.character(unlist(patients)) ) , ]
@@ -198,11 +215,10 @@ keepCols
 
 table(clinicalOV$patient.race,useNA =  "always" )
 #NA = white
-
 clinicalOV$patient.race[which(is.na(clinicalOV$patient.race))] = "white"
 
 table(clinicalOV$patient.neoplasm_histologic_grade, useNA =  "always" )
-#NA = g3
+#NA = g3 - "or gx which means that cannot be assessed?"
 clinicalOV$patient.neoplasm_histologic_grade[which(is.na(clinicalOV$patient.neoplasm_histologic_grade))]="g3"
 
 table(clinicalOV$patient.biospecimen_cqcf.histological_type , useNA =  "always" )
@@ -225,8 +241,7 @@ clinicalOV <- clinicalOV[,-2]
 
 patients <- as.character(row.names(clinicalOV))
 
-save(clinicalOV,file="temp/clinicalOV.RData")
-load(file="temp/clinicalOV.RData")
+
 #### dicomotization of clinical vars -------
 
 source('~/CLIGEN_tgit/R/1-TensorDefinition/dicotomFunctions.R')
@@ -236,16 +251,24 @@ clinical <- clinicalOV
 NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
 NumVals
 
-
-
 #4 level columns-----------------
 cols4 <- which(NumVals==4)
 ncols <- names(cols4)
 table(clinical[,ncols[1]], useNA =  "always" )
-table(clinical[,ncols[2]], useNA =  "always" )
 
 matDich4 <- dichoSeveralCols(cols=cols4)
 
+#5 level columns-----------------
+#patient.neoplasm_histologic_grade
+cols5 <- which(NumVals==5)
+ncols <- names(cols5)
+table(clinical[,ncols[1]], useNA =  "always" )
+
+#based on SEER move gb to gx
+clinical$patient.neoplasm_histologic_grade[which(clinical$patient.neoplasm_histologic_grade == "gb" )]="gx"
+#and too little g1 move to g1 and g2
+clinical$patient.neoplasm_histologic_grade[which(clinical$patient.neoplasm_histologic_grade == "g1" )]="g1_2"
+clinical$patient.neoplasm_histologic_grade[which(clinical$patient.neoplasm_histologic_grade == "g2" )]="g1_2"
 
 #Stage
 table(clinical$patient.stage_event.clinical_stage , useNA =  "always" )
@@ -258,10 +281,16 @@ clinical$patient.stage_event.clinical_stage[which(regexpr("stage iv",
 clinical$patient.stage_event.clinical_stage[which(regexpr("stage i",
                                                             clinical$patient.stage_event.clinical_stage) != -1)] = "STAGE I and II"
 
-
 NumVals <- apply(clinical, 2 ,function(x) { length(unique(x))})
 NumVals
+
+
+#3 level columns-----------------
 cols3 <- which(NumVals==3)
+ncols <- names(cols3)
+table(clinical[,ncols[1]], useNA =  "always" )
+table(clinical[,ncols[2]], useNA =  "always" )
+
 matDich3 <- dichoSeveralCols(cols=cols3)
 
 #using Sturges
@@ -291,18 +320,36 @@ anyNA(boolClinical)
 dim(boolClinical)
 row.names(boolClinical) <- row.names(clinical)
 
+#save data again -----
+
+load(file="data/boolClinical.RData")
 patients <- row.names(boolClinical)
+#save(boolClinical, file="data/boolClinical_smooth.RData")
 save(boolClinical, file="data/boolClinical.RData")
-save(patients, file="data/patients.RData")
+save(patients, file="data/patients.Rd")
+save(clinicalOV,file="temp/clinicalOV_raw.RData")
+#load(file="temp/clinicalOV.RData")
+load("data/boolMutation.RData")
+boolMutation <- boolMutation[patients,]
+anyNA(boolMutation)
+save(boolMutation, file="data/boolMutation.RData")
+load("data/binaMutation.Rd")
+binaMutation <- binaMutation[patients,]
+anyNA(binaMutation)
+save(binaMutation, file="data/binaMutation.RData")
+source( '~/CLIGEN_tgit/R/1-TensorDefinition/fromLogic2Numeric.R' )
+binaClinical <- fromLogic2Numeric(boolClinical[patients,])
+save(binaClinical,file="temp/binaClinical.Rd")
 
 #write csv files for rubik matlab ------------
 rm(list = ls())
 load(file="data/binaMutation.Rd")
 load(file="data/boolClinical.RData")
-load(file="data/patients.RData")
-source( '~/CLIGEN_tgit/R/1-TensorDefinition/fromLogic2Numeric.R' )
-binaClinical <- fromLogic2Numeric(boolClinical[patients,])
+load(file="data/patients.Rd")
+load(file="temp/binaClinical.Rd")
+
 tMut <- t(binaMutation[patients,])
+anyNA(tMut)
 #write.csv2(boolMutation, file = "temp/10-boolM.csv",row.names = FALSE)
 write.csv2(tMut, file = "output4rubik/1-binaM_OVA.csv",row.names = FALSE)
 write.csv2(binaClinical, file = "output4rubik/1-binaC_OVA.csv",row.names = FALSE)

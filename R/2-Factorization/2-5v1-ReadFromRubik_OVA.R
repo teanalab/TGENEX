@@ -12,7 +12,7 @@ row.names(mutationF) <- names(binaMutation)
 
 patientsF<-read.table(file="rubikOutput/u2.csv", sep = ",", quote = '"',
                       header = FALSE, stringsAsFactors = FALSE)
-load(file= "data/patients.RData")
+load(file= "data/patients.Rd")
 row.names(patientsF) <- patients
 
 weightsC <-read.table(file="rubikOutput/lambda.csv", sep = ",", quote = '"',
@@ -26,5 +26,7 @@ patientAfiliationRubik_PxC <- data.frame(patient=patients,
                                        component=patientVsK$whichmax)
 
 
-save(clinicalF,mutationF,patientsF,patients,weightsC, file="data/factors.RData")
-save(patientAfiliationRubik_PxC, file="data/patientAfiliationRubik_PxC.Rd")
+save(clinicalF,mutationF,patientsF,patients,weightsC, file="data/factors_raw.RData")
+#save(clinicalF,mutationF,patientsF,patients,weightsC, file="data/factors_smooth.RData")
+#save(patientAfiliationRubik_PxC, file="data/patientAfiliationRubik_PxC_smooth.Rd")
+save(patientAfiliationRubik_PxC, file="data/patientAfiliationRubik_PxC_raw.Rd")

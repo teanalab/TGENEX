@@ -1,0 +1,54 @@
+---
+title: "Results of ovarian data"
+output: html_notebook
+---
+
+*NBS*
+
+This is obtained by:
+1. network propagation and quantile normalization
+2. NMF factorization (net nmf) k=4
+4. assign cluster indexes to the index with maximum score
+
+pvalue =  0.00406846
+
+*STANDARD NMF*
+
+This is obtained with out any network smoothing, just NNLS based NMF (non-negative-constrained least squares)
+k=4
+clustering index assigned to the maximum score
+
+pvalue = 0.2653275 
+
+*NBS with concensus clustering*
+
+This is obtained by:
+1. network propagation and quantile normalization
+2. NMF factorization (net nmf) k=4
+3. CC with 100 reperitions, 80% of the samples, nmf clustering, k = [2,3,4]
+4. assign to clusters using average linkage herarchical clustering of the patients' similarity matrix obtained with CC
+
+pvalue = 0.007446442  
+
+*Standard CC*
+
+This is obtained with out any network smoothing, just concensus clustering with the following settings:
+k = [2,3,4]
+nSamples = 100
+proportion of patients included in CC = 0.8
+type = NMF
+hard assignment using the max frequency on count of co-clustering pairs
+
+p-value = 0.2551205 
+
+```{r}
+source('~/CLIGEN_tgit/R/9-OV/SAfromMatlabResultsOV.R', echo=TRUE)
+```
+After runing the above I got these results: 
+ 
+results: 
+ 
+NBS pvalue 	 0.00406846 
+NMF pvalue 	 0.2653275 
+NBS_cc pvalue 	 0.007446442 
+CC pvalue 	 0.2551205

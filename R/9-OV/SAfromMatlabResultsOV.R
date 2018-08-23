@@ -1,20 +1,22 @@
 #version 2 (Aug/2/2018)
 rm(list = ls())
-load("loadls.RData")
+load("data/loadls.RData")
 loadls("plyr survival missForest survAUC prodlim survminer RTCGA.clinical", F)
 
 
 LoadData <- function()
 {
-  clustersNBS <<- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_output_clustersNBS4.csv", sep = "\t", quote = "",
+  clustersNBS <<- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_NBS_wo_cc_k4.csv", sep = "\t", quote = "",
                            header = FALSE, stringsAsFactors = FALSE)
-  standardNMF <<- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_output_standardNMF_indClust_ctrl4.csv", sep = ",", quote = "",
+  standardNMF <<- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_NMF_indClust_4_nosmooth.csv", sep = ",", quote = "",
                            header = FALSE, stringsAsFactors = FALSE)
-  patients <<-    read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_output_sample_id4.csv", sep = "\t", quote = "'",
+  patients <<-    read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_sample_raw.csv", sep = "\t", quote = "'",
                         header = FALSE, stringsAsFactors = FALSE)
-  clustersNBS_cc <<- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_CC_clustersNBS4.csv", sep = "\t", quote = "",
+  patients <<-  gsub(",","",patients[,1])
+  patients <<- tolower(patients)
+  clustersNBS_cc <<- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_NBS_plusCC_k4.csv", sep = "\t", quote = "",
                             header = FALSE, stringsAsFactors = FALSE)
-  clusters_cc <<- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_CC_4.csv", sep = "\t", quote = "",
+  clusters_cc <<- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_standardCC_noSmooth_k4.csv", sep = "\t", quote = "",
                                header = FALSE, stringsAsFactors = FALSE)
   ###
   #More details on Phenotype For OV.R
@@ -32,7 +34,8 @@ LoadData <- function()
 
 
   #Rubik
-  load(file="data/patientAfiliationRubik_PxC.Rd", envir = globalenv())
+  load(file="data/patientAfiliationRubik_PxC_smooth.Rd", envir = globalenv())
+  #load(file="data/patientAfiliationRubik_PxC_raw.Rd", envir = globalenv())
 
   ##plotting functions
   source("R/6-SurvivalAnalysis/plotSurvivalUpdate.R")
@@ -53,14 +56,11 @@ survAnaNBS <- function(){
   patiF <- patiF[,-c(1,2)]
   patiF <- patiF[,-3]
 
-  toDel <- which(is.na(patiF$months))
+  anyNA(patiF)
+  #toDel <- which(is.na(patiF$months))
   #patiF <- patiF[-11,]
 
-  anyNA(patiF)
-
-
   patiF$months <- as.numeric(patiF$months)
-
   #NBS components
   SurFunction <- Surv(time = patiF$months,
                       event = patiF$survi)~factor(patiF$cluster)
@@ -69,11 +69,11 @@ survAnaNBS <- function(){
                       method = "breslow", data=patiF,
                       x=T, y=T, model=T)
   x <- summary(coxFit_NBS)
-  # Concordance= 0.588  (se = 0.024 )
-  # Rsquare= 0.04   (max possible= 0.988 )
-  # Likelihood ratio test= 14.27  on 3 df,   p=0.003
-  # Wald test            = 12.25  on 3 df,   p=0.007
-  # Score (logrank) test = 13.28  on 3 df,   p=0.004
+  # Concordance= 0.577  (se = 0.024 )
+  # Rsquare= 0.041   (max possible= 0.988 )
+  # Likelihood ratio test= 14.7  on 3 df,   p=0.002
+  # Wald test            = 10.36  on 3 df,   p=0.02
+  # Score (logrank) test = 11.98  on 3 df,   p=0.007
 
   #Nonparametric estimation in event history analysis
   #clinical variables
@@ -409,10 +409,11 @@ cat("results: \n",
     "\nNBS pvalue \t", pValNBS$sctest[3],
     "\nNMF pvalue \t", pValNMF$sctest[3],
     "\nNBS_cc pvalue \t", pValNBS_cc$sctest[3],
-    "\nCC pvalue \t", pVal_cc$sctest[3],
-    "\nsurvAna_NMFr_m \t", pVsurvAna_NMFr_m$sctest[3],
-    "\nsurvAna_NMFr_c \t", pVsurvAna_NMFr_c$sctest[3],
-    "\nsurvAna_Rubik \t", pVsurvAna_Rubik$sctest[3])
+    "\nCC pvalue \t", pVal_cc$sctest[3]
+    #"\nsurvAna_NMFr_m \t", pVsurvAna_NMFr_m$sctest[3],
+    #"\nsurvAna_NMFr_c \t", pVsurvAna_NMFr_c$sctest[3],
+  #  "\nsurvAna_Rubik \t", pVsurvAna_Rubik$sctest[3]
+  )
 
 
 save.image("temp/SA.RData")
