@@ -8,13 +8,23 @@ output: html_notebook
 This is obtained by:
 1. network propagation and quantile normalization
 2. NMF factorization (net nmf) k=4
-4. assign cluster indexes to the index with maximum score
+3. assign cluster indexes to the index with maximum score
+
+References and clarifications
+3)
+Let's say Y is the matrix with Patients as rows and k columns after NMF. Then, a patient is assigned to the index of the column with the maximum value.
+
+This was implemented using the nmf tool box https://sites.google.com/site/nmftool/
+Y. Li and A. Ngom, "The non-negative matrix factorization toolbox for biological data mining," BMC Source Code for Biology and Medicine, vol 8, pp. 10, April 2013.
+
+The script name is NMFCluster.m
+
 
 pvalue =  0.00406846
 
-*STANDARD NMF*
+*Standard NMF*
 
-This is obtained with out any network smoothing, just NNLS based NMF (non-negative-constrained least squares)
+This is obtained without any network smoothing, just NNLS based NMF (non-negative-constrained least squares)
 k=4
 clustering index assigned to the maximum score
 
@@ -30,16 +40,40 @@ This is obtained by:
 
 pvalue = 0.007446442  
 
+References and clarifications
+4)
+From consensus clustering, we obtain a patient similarity matrix. To assign labels to patients, they use average linkage hierarchical clustering.
+
+The script name is calc_label.m
+
+This is the method they use to compute average linkage https://www.mathworks.com/help/stats/linkage.html
+
 *Standard CC*
 
-This is obtained with out any network smoothing, just concensus clustering with the following settings:
-k = [2,3,4]
-nSamples = 100
-proportion of patients included in CC = 0.8
-type = NMF
-hard assignment using the max frequency on count of co-clustering pairs
+Main script: nbs_cc_main.m
+This is obtained without any network smoothing, just concensus clustering with the following steps:
+
+1. Run NMF with k = [2,3,4], 80% of samples, and 100 repetitions. Assign label using max score, like explained above. 
+2. From the 300 partitionings, build the patient similarity matrix (consensus clustering)
+script: "hmat_to_cc_cluster.m"
+3. Assign labels to patients (usign average linkage herarchical clustering)
+
 
 p-value = 0.2551205 
+
+
+*Rubik smooth*
+
+1. change data format using 1-2v3-BoolMatrices_Ovarian.R
+2. Copy files to Rubik folder /Users/diamac/10-Research/4Current/CLINGEN/9source/rubik/data 
+3. Import csv files as Numeric Matrix and save the scripts. Change variable name at the bottom.
+4. run_cligen.m
+tensor is the smoothed value on the mutation matrix for each true value in the clinical matrix
+
+
+
+
+
 
 ```{r}
 source('~/CLIGEN_tgit/R/9-OV/SAfromMatlabResultsOV.R', echo=TRUE)

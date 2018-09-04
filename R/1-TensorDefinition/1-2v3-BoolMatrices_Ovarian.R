@@ -35,42 +35,35 @@ patientFirebrowse <- patients
 sum(mutatFirebrowse)
 
 # data from Matlab Smoothed network----
-NBSboolMutation <- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_sampleXgenes.csv",
-                       sep = ",", quote = "",
-                       header = FALSE, stringsAsFactors = FALSE)
-NBSpatients <- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_output_sample_id4.csv",
+NBSmatrixMutation <- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_sampleXgenes_smoothed.csv",
+                       sep = ",", quote = "", header = FALSE, stringsAsFactors = FALSE)
+NBSpatients <- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_sample_raw.csv",
                        sep = "\t", quote = "'", header = FALSE, stringsAsFactors = FALSE)
-
-NBSgenes <- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_genes.csv",
-                          sep = "\t", quote = "'", header = FALSE, stringsAsFactors = FALSE)
-
-
-sum(NBSboolMutation)
-max(NBSboolMutation)
-boolMutation <- NBSboolMutation
-row.names(boolMutation)  <- as.character(unlist(NBSpatients))
-names(boolMutation) <- as.character(unlist(NBSgenes))
-
-source("R/1-TensorDefinition/fromNumeric2Logic.R")
-boolMutation <- fromNumeric2Logic(boolMutation) #takes time
-
-
+NBSgenes <- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_geneKeys_smoothed.csv",
+                       sep = "\t", quote = "'", header = FALSE, stringsAsFactors = FALSE)
+NBSpatients <- gsub(',','',as.character(unlist(NBSpatients)))
+NBSpatients <- tolower(NBSpatients)
+sum(NBSmatrixMutation)
+max(NBSmatrixMutation)
+min(NBSmatrixMutation)
+binaMutation <- NBSmatrixMutation
+row.names(binaMutation)  <- as.character(unlist(NBSpatients))
+names(binaMutation) <- as.character(unlist(NBSgenes))
 
 #Number of patients with mutation x
-pat4genes <- apply(boolMutation,2,sum)
+pat4genes <- apply(binaMutation,2,sum)
 #Genes to remove
 if ( length(which(pat4genes<=0)) > 0 ){
-  boolMutation <- boolMutation[,-which(pat4genes<=0)]
+  binaMutation <- binaMutation[,-which(pat4genes<=0)]
 }
 
-x<-apply(boolMutation,2,sum)
+x<-apply(binaMutation,2,sum)
 min(x)
-save(boolMutation, file="data/boolMutationSmooth.RData")
+save(binaMutation, file="data/matrixMutationSmooth.Rd")
 
+patients <- NBSpatients
+save(patients, file="data/patientsSmooth.Rd")
 
-source("R/1-TensorDefinition/fromLogic2Numeric.R")
-binaMutation <- fromLogic2Numeric(boolMutation)
-save(binaMutation, file="data/binaMutationSmooth.Rd")
 
 # data from Matlab raw ----
 NBSboolMutation <- read.table(file="/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc/output/ova_sampleXgenes_raw.csv",
@@ -118,6 +111,7 @@ save(boolMutation, file="data/boolMutation.Rd")
 
 
 # RTGCA -----------
+load("data/loadls.RData")
 loadls("RTCGA.mutations dplyr reshape2")
 library(RTCGA.mutations)
 library(dplyr)
@@ -145,8 +139,8 @@ sum(binaMutation)
 
 #### clinical -----
 
-load("loadls.RData")
-loadls("RTCGA")
+load("data/loadls.RData")
+loadls("RTCGA RTCGA.clinical",F)
 data(OV.clinical)
 names(OV.clinical)
 load(file="data/patients.Rd")
@@ -218,16 +212,16 @@ table(clinicalOV$patient.race,useNA =  "always" )
 clinicalOV$patient.race[which(is.na(clinicalOV$patient.race))] = "white"
 
 table(clinicalOV$patient.neoplasm_histologic_grade, useNA =  "always" )
-#NA = g3 - "or gx which means that cannot be assessed?"
-clinicalOV$patient.neoplasm_histologic_grade[which(is.na(clinicalOV$patient.neoplasm_histologic_grade))]="g3"
+#NA = gx which means that cannot be assessed
+clinicalOV$patient.neoplasm_histologic_grade[which(is.na(clinicalOV$patient.neoplasm_histologic_grade))]="gx"
 
 table(clinicalOV$patient.biospecimen_cqcf.histological_type , useNA =  "always" )
-#delete only one value
+#delete column, it has only one value
 which(names(clinicalOV) == "patient.biospecimen_cqcf.histological_type")
 clinicalOV <- clinicalOV[,-5]
 
 table(clinicalOV$patient.biospecimen_cqcf.history_of_neoadjuvant_treatment , useNA =  "always" )
-#delete only one value
+#delete column, it has only one value
 which(names(clinicalOV) == "patient.biospecimen_cqcf.history_of_neoadjuvant_treatment")
 clinicalOV <- clinicalOV[,-5]
 
@@ -241,7 +235,7 @@ clinicalOV <- clinicalOV[,-2]
 
 patients <- as.character(row.names(clinicalOV))
 
-
+save.image("temp/1-2v3-before_dico")
 #### dicomotization of clinical vars -------
 
 source('~/CLIGEN_tgit/R/1-TensorDefinition/dicotomFunctions.R')
@@ -258,6 +252,14 @@ table(clinical[,ncols[1]], useNA =  "always" )
 
 matDich4 <- dichoSeveralCols(cols=cols4)
 
+#OPTIONAL delete one column
+#I'm afraid we are getting this error ('MATLAB:sylvester:solutionNotUnique')
+#because there is always a redundant column so Im getting rid of them
+table(clinical[,ncols[1]], useNA =  "always" )
+#In this case delete the less frequent aka alaskan
+matDich4 <- matDich4[ , -1]
+
+
 #5 level columns-----------------
 #patient.neoplasm_histologic_grade
 cols5 <- which(NumVals==5)
@@ -270,7 +272,11 @@ clinical$patient.neoplasm_histologic_grade[which(clinical$patient.neoplasm_histo
 clinical$patient.neoplasm_histologic_grade[which(clinical$patient.neoplasm_histologic_grade == "g1" )]="g1_2"
 clinical$patient.neoplasm_histologic_grade[which(clinical$patient.neoplasm_histologic_grade == "g2" )]="g1_2"
 
-#Stage
+#after merging values it hase three
+table(clinical[,ncols[1]], useNA =  "always" )
+
+
+##Stage
 table(clinical$patient.stage_event.clinical_stage , useNA =  "always" )
 clinical$patient.stage_event.clinical_stage[which(regexpr("stage iii",
                                                           clinical$patient.stage_event.clinical_stage) != -1)] = "STAGE III"
@@ -293,6 +299,16 @@ table(clinical[,ncols[2]], useNA =  "always" )
 
 matDich3 <- dichoSeveralCols(cols=cols3)
 
+#OPTIONAL delete one column
+#I'm afraid we are getting this error ('MATLAB:sylvester:solutionNotUnique')
+#because there is always a redundant column so Im getting rid of them
+table(clinical[,ncols[1]], useNA =  "always" )
+table(clinical[,ncols[2]], useNA =  "always" )
+#In this case delete the less frequent aka gx and STAGE I and II
+matDich3 <- matDich3[ , -c(3,4)]
+
+
+
 #using Sturges
 ##2	Diagnosis.Age
 C <- "patient.age_at_initial_pathologic_diagnosis"
@@ -305,6 +321,16 @@ aMat <- classesSturges(C)
 aMati <- as.data.frame(lapply(aMat, as.logical))
 names(aMati) <- names(aMat)
 row.names(aMati) <- patients
+
+#OPTIONAL delete one column
+#I'm afraid we are getting this error ('MATLAB:sylvester:solutionNotUnique')
+#because there is always a redundant column so Im getting rid of them
+apply(aMati,2,sum)
+#In this case delete the less frequent aka NA(79,89]
+aMati <- aMati[ , -10]
+
+
+#merge all levels ----
 
 conc1 <- merge(matDich4, matDich3, by='row.names' )
 row.names(conc1) <- conc1$Row.names
@@ -320,15 +346,37 @@ anyNA(boolClinical)
 dim(boolClinical)
 row.names(boolClinical) <- row.names(clinical)
 
-#save data again -----
+#WHEN OPTIONAL
+save(boolClinical,file="temp/boolCSmooth_beforeSave.RData")
 
+
+#save data again -----
+#clinical
 load(file="data/boolClinical.RData")
 patients <- row.names(boolClinical)
-#save(boolClinical, file="data/boolClinical_smooth.RData")
 save(boolClinical, file="data/boolClinical.RData")
 save(patients, file="data/patients.Rd")
 save(clinicalOV,file="temp/clinicalOV_raw.RData")
-#load(file="temp/clinicalOV.RData")
+source( '~/CLIGEN_tgit/R/1-TensorDefinition/fromLogic2Numeric.R' )
+binaClinical <- fromLogic2Numeric(boolClinical[patients,])
+save(binaClinical,file="temp/binaClinical.Rd")
+
+
+#smooth
+source( '~/CLIGEN_tgit/R/1-TensorDefinition/fromLogic2Numeric.R' )
+binaClinical <- fromLogic2Numeric(boolClinical[patients,])
+load("data/matrixMutationSmooth.Rd")
+ppp <- intersect(patients, row.names(binaMutation))
+binaClinical <- binaClinical[ppp,]
+anyNA(binaClinical)
+save(binaClinical,file="data/binaClinicalSmooth.Rd")
+
+patients <- ppp
+save(patients,file="data/patientsSmooth.Rd")
+
+
+#mutation
+load(file="temp/clinicalOV.RData")
 load("data/boolMutation.RData")
 boolMutation <- boolMutation[patients,]
 anyNA(boolMutation)
@@ -337,21 +385,29 @@ load("data/binaMutation.Rd")
 binaMutation <- binaMutation[patients,]
 anyNA(binaMutation)
 save(binaMutation, file="data/binaMutation.RData")
-source( '~/CLIGEN_tgit/R/1-TensorDefinition/fromLogic2Numeric.R' )
-binaClinical <- fromLogic2Numeric(boolClinical[patients,])
-save(binaClinical,file="temp/binaClinical.Rd")
+
+#smooth
+binaMutation <- binaMutation[ppp,]
+save(binaMutation, file="data/matrixMutationSmooth.Rd")
+
+
 
 #write csv files for rubik matlab ------------
 rm(list = ls())
-load(file="data/binaMutation.Rd")
 load(file="data/boolClinical.RData")
 load(file="data/patients.Rd")
 load(file="temp/binaClinical.Rd")
+load(file="data/binaMutation.Rd")
+
+#smooth
+load(file="data/matrixMutationSmooth.Rd")
+load(file="data/patientsSmooth.Rd")
+load(file="temp/binaClinicalSmooth.Rd")
+
+
 
 tMut <- t(binaMutation[patients,])
 anyNA(tMut)
 #write.csv2(boolMutation, file = "temp/10-boolM.csv",row.names = FALSE)
 write.csv2(tMut, file = "output4rubik/1-binaM_OVA.csv",row.names = FALSE)
 write.csv2(binaClinical, file = "output4rubik/1-binaC_OVA.csv",row.names = FALSE)
-
-

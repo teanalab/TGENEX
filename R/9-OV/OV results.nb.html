@@ -177,17 +177,35 @@ $(document).ready(function () {
 
 <!-- rnb-text-begin -->
 <p><em>NBS</em></p>
-<p>This is obtained by: 1. network propagation and quantile normalization 2. NMF factorization (net nmf) k=4 4. assign cluster indexes to the index with maximum score</p>
+<p>This is obtained by: 1. network propagation and quantile normalization 2. NMF factorization (net nmf) k=4 3. assign cluster indexes to the index with maximum score</p>
+<p>References and clarifications 3) Let’s say Y is the matrix with Patients as rows and k columns after NMF. Then, a patient is assigned to the index of the column with the maximum value.</p>
+<p>This was implemented using the nmf tool box <a href="https://sites.google.com/site/nmftool/" class="uri">https://sites.google.com/site/nmftool/</a> Y. Li and A. Ngom, “The non-negative matrix factorization toolbox for biological data mining,” BMC Source Code for Biology and Medicine, vol 8, pp. 10, April 2013.</p>
+<p>The script name is NMFCluster.m</p>
 <p>pvalue = 0.00406846</p>
-<p><em>STANDARD NMF</em></p>
-<p>This is obtained with out any network smoothing, just NNLS based NMF (non-negative-constrained least squares) k=4 clustering index assigned to the maximum score</p>
+<p><em>Standard NMF</em></p>
+<p>This is obtained without any network smoothing, just NNLS based NMF (non-negative-constrained least squares) k=4 clustering index assigned to the maximum score</p>
 <p>pvalue = 0.2653275</p>
 <p><em>NBS with concensus clustering</em></p>
 <p>This is obtained by: 1. network propagation and quantile normalization 2. NMF factorization (net nmf) k=4 3. CC with 100 reperitions, 80% of the samples, nmf clustering, k = [2,3,4] 4. assign to clusters using average linkage herarchical clustering of the patients’ similarity matrix obtained with CC</p>
 <p>pvalue = 0.007446442</p>
+<p>References and clarifications 4) From consensus clustering, we obtain a patient similarity matrix. To assign labels to patients, they use average linkage hierarchical clustering.</p>
+<p>The script name is calc_label.m</p>
+<p>This is the method they use to compute average linkage <a href="https://www.mathworks.com/help/stats/linkage.html" class="uri">https://www.mathworks.com/help/stats/linkage.html</a></p>
 <p><em>Standard CC</em></p>
-<p>This is obtained with out any network smoothing, just concensus clustering with the following settings: k = [2,3,4] nSamples = 100 proportion of patients included in CC = 0.8 type = NMF hard assignment using the max frequency on count of co-clustering pairs</p>
+<p>Main script: nbs_cc_main.m This is obtained without any network smoothing, just concensus clustering with the following steps:</p>
+<ol style="list-style-type: decimal">
+<li>Run NMF with k = [2,3,4], 80% of samples, and 100 repetitions. Assign label using max score, like explained above.</li>
+<li>From the 300 partitionings, build the patient similarity matrix (consensus clustering) script: “hmat_to_cc_cluster.m”</li>
+<li>Assign labels to patients (usign average linkage herarchical clustering)</li>
+</ol>
 <p>p-value = 0.2551205</p>
+<p><em>Rubik smooth</em></p>
+<ol style="list-style-type: decimal">
+<li>change data format using 1-2v3-BoolMatrices_Ovarian.R</li>
+<li>Copy files to Rubik folder /Users/diamac/10-Research/4Current/CLINGEN/9source/rubik/data</li>
+<li>Import csv files as Numeric Matrix and save the scripts. Change variable name at the bottom.</li>
+<li>run_cligen.m tensor is the smoothed value on the mutation matrix for each true value in the clinical matrix</li>
+</ol>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKCd+L0NMSUdFTl90Z2l0L1IvOS1PVi9TQWZyb21NYXRsYWJSZXN1bHRzT1YuUicsIGVjaG89VFJVRSlcbmBgYCJ9 -->
@@ -200,7 +218,7 @@ $(document).ready(function () {
 <p>NBS pvalue 0.00406846 NMF pvalue 0.2653275 NBS_cc pvalue 0.007446442 CC pvalue 0.2551205</p>
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUmVzdWx0cyBvZiBvdmFyaWFuIGRhdGEiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCipOQlMqCgpUaGlzIGlzIG9idGFpbmVkIGJ5OgoxLiBuZXR3b3JrIHByb3BhZ2F0aW9uIGFuZCBxdWFudGlsZSBub3JtYWxpemF0aW9uCjIuIE5NRiBmYWN0b3JpemF0aW9uIChuZXQgbm1mKSBrPTQKNC4gYXNzaWduIGNsdXN0ZXIgaW5kZXhlcyB0byB0aGUgaW5kZXggd2l0aCBtYXhpbXVtIHNjb3JlCgpwdmFsdWUgPSAgMC4wMDQwNjg0NgoKKlNUQU5EQVJEIE5NRioKClRoaXMgaXMgb2J0YWluZWQgd2l0aCBvdXQgYW55IG5ldHdvcmsgc21vb3RoaW5nLCBqdXN0IE5OTFMgYmFzZWQgTk1GIChub24tbmVnYXRpdmUtY29uc3RyYWluZWQgbGVhc3Qgc3F1YXJlcykKaz00CmNsdXN0ZXJpbmcgaW5kZXggYXNzaWduZWQgdG8gdGhlIG1heGltdW0gc2NvcmUKCnB2YWx1ZSA9IDAuMjY1MzI3NSAKCipOQlMgd2l0aCBjb25jZW5zdXMgY2x1c3RlcmluZyoKClRoaXMgaXMgb2J0YWluZWQgYnk6CjEuIG5ldHdvcmsgcHJvcGFnYXRpb24gYW5kIHF1YW50aWxlIG5vcm1hbGl6YXRpb24KMi4gTk1GIGZhY3Rvcml6YXRpb24gKG5ldCBubWYpIGs9NAozLiBDQyB3aXRoIDEwMCByZXBlcml0aW9ucywgODAlIG9mIHRoZSBzYW1wbGVzLCBubWYgY2x1c3RlcmluZywgayA9IFsyLDMsNF0KNC4gYXNzaWduIHRvIGNsdXN0ZXJzIHVzaW5nIGF2ZXJhZ2UgbGlua2FnZSBoZXJhcmNoaWNhbCBjbHVzdGVyaW5nIG9mIHRoZSBwYXRpZW50cycgc2ltaWxhcml0eSBtYXRyaXggb2J0YWluZWQgd2l0aCBDQwoKcHZhbHVlID0gMC4wMDc0NDY0NDIgIAoKKlN0YW5kYXJkIENDKgoKVGhpcyBpcyBvYnRhaW5lZCB3aXRoIG91dCBhbnkgbmV0d29yayBzbW9vdGhpbmcsIGp1c3QgY29uY2Vuc3VzIGNsdXN0ZXJpbmcgd2l0aCB0aGUgZm9sbG93aW5nIHNldHRpbmdzOgprID0gWzIsMyw0XQpuU2FtcGxlcyA9IDEwMApwcm9wb3J0aW9uIG9mIHBhdGllbnRzIGluY2x1ZGVkIGluIENDID0gMC44CnR5cGUgPSBOTUYKaGFyZCBhc3NpZ25tZW50IHVzaW5nIHRoZSBtYXggZnJlcXVlbmN5IG9uIGNvdW50IG9mIGNvLWNsdXN0ZXJpbmcgcGFpcnMKCnAtdmFsdWUgPSAwLjI1NTEyMDUgCgpgYGB7cn0Kc291cmNlKCd+L0NMSUdFTl90Z2l0L1IvOS1PVi9TQWZyb21NYXRsYWJSZXN1bHRzT1YuUicsIGVjaG89VFJVRSkKYGBgCkFmdGVyIHJ1bmluZyB0aGUgYWJvdmUgSSBnb3QgdGhlc2UgcmVzdWx0czogCiAKcmVzdWx0czogCiAKTkJTIHB2YWx1ZSAJIDAuMDA0MDY4NDYgCk5NRiBwdmFsdWUgCSAwLjI2NTMyNzUgCk5CU19jYyBwdmFsdWUgCSAwLjAwNzQ0NjQ0MiAKQ0MgcHZhbHVlIAkgMC4yNTUxMjA1Cg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUmVzdWx0cyBvZiBvdmFyaWFuIGRhdGEiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCipOQlMqCgpUaGlzIGlzIG9idGFpbmVkIGJ5OgoxLiBuZXR3b3JrIHByb3BhZ2F0aW9uIGFuZCBxdWFudGlsZSBub3JtYWxpemF0aW9uCjIuIE5NRiBmYWN0b3JpemF0aW9uIChuZXQgbm1mKSBrPTQKMy4gYXNzaWduIGNsdXN0ZXIgaW5kZXhlcyB0byB0aGUgaW5kZXggd2l0aCBtYXhpbXVtIHNjb3JlCgpSZWZlcmVuY2VzIGFuZCBjbGFyaWZpY2F0aW9ucwozKQpMZXQncyBzYXkgWSBpcyB0aGUgbWF0cml4IHdpdGggUGF0aWVudHMgYXMgcm93cyBhbmQgayBjb2x1bW5zIGFmdGVyIE5NRi4gVGhlbiwgYSBwYXRpZW50IGlzIGFzc2lnbmVkIHRvIHRoZSBpbmRleCBvZiB0aGUgY29sdW1uIHdpdGggdGhlIG1heGltdW0gdmFsdWUuCgpUaGlzIHdhcyBpbXBsZW1lbnRlZCB1c2luZyB0aGUgbm1mIHRvb2wgYm94IGh0dHBzOi8vc2l0ZXMuZ29vZ2xlLmNvbS9zaXRlL25tZnRvb2wvClkuIExpIGFuZCBBLiBOZ29tLCAiVGhlIG5vbi1uZWdhdGl2ZSBtYXRyaXggZmFjdG9yaXphdGlvbiB0b29sYm94IGZvciBiaW9sb2dpY2FsIGRhdGEgbWluaW5nLCIgQk1DIFNvdXJjZSBDb2RlIGZvciBCaW9sb2d5IGFuZCBNZWRpY2luZSwgdm9sIDgsIHBwLiAxMCwgQXByaWwgMjAxMy4KClRoZSBzY3JpcHQgbmFtZSBpcyBOTUZDbHVzdGVyLm0KCgpwdmFsdWUgPSAgMC4wMDQwNjg0NgoKKlN0YW5kYXJkIE5NRioKClRoaXMgaXMgb2J0YWluZWQgd2l0aG91dCBhbnkgbmV0d29yayBzbW9vdGhpbmcsIGp1c3QgTk5MUyBiYXNlZCBOTUYgKG5vbi1uZWdhdGl2ZS1jb25zdHJhaW5lZCBsZWFzdCBzcXVhcmVzKQprPTQKY2x1c3RlcmluZyBpbmRleCBhc3NpZ25lZCB0byB0aGUgbWF4aW11bSBzY29yZQoKcHZhbHVlID0gMC4yNjUzMjc1IAoKKk5CUyB3aXRoIGNvbmNlbnN1cyBjbHVzdGVyaW5nKgoKVGhpcyBpcyBvYnRhaW5lZCBieToKMS4gbmV0d29yayBwcm9wYWdhdGlvbiBhbmQgcXVhbnRpbGUgbm9ybWFsaXphdGlvbgoyLiBOTUYgZmFjdG9yaXphdGlvbiAobmV0IG5tZikgaz00CjMuIENDIHdpdGggMTAwIHJlcGVyaXRpb25zLCA4MCUgb2YgdGhlIHNhbXBsZXMsIG5tZiBjbHVzdGVyaW5nLCBrID0gWzIsMyw0XQo0LiBhc3NpZ24gdG8gY2x1c3RlcnMgdXNpbmcgYXZlcmFnZSBsaW5rYWdlIGhlcmFyY2hpY2FsIGNsdXN0ZXJpbmcgb2YgdGhlIHBhdGllbnRzJyBzaW1pbGFyaXR5IG1hdHJpeCBvYnRhaW5lZCB3aXRoIENDCgpwdmFsdWUgPSAwLjAwNzQ0NjQ0MiAgCgpSZWZlcmVuY2VzIGFuZCBjbGFyaWZpY2F0aW9ucwo0KQpGcm9tIGNvbnNlbnN1cyBjbHVzdGVyaW5nLCB3ZSBvYnRhaW4gYSBwYXRpZW50IHNpbWlsYXJpdHkgbWF0cml4LiBUbyBhc3NpZ24gbGFiZWxzIHRvIHBhdGllbnRzLCB0aGV5IHVzZSBhdmVyYWdlIGxpbmthZ2UgaGllcmFyY2hpY2FsIGNsdXN0ZXJpbmcuCgpUaGUgc2NyaXB0IG5hbWUgaXMgY2FsY19sYWJlbC5tCgpUaGlzIGlzIHRoZSBtZXRob2QgdGhleSB1c2UgdG8gY29tcHV0ZSBhdmVyYWdlIGxpbmthZ2UgaHR0cHM6Ly93d3cubWF0aHdvcmtzLmNvbS9oZWxwL3N0YXRzL2xpbmthZ2UuaHRtbAoKKlN0YW5kYXJkIENDKgoKTWFpbiBzY3JpcHQ6IG5ic19jY19tYWluLm0KVGhpcyBpcyBvYnRhaW5lZCB3aXRob3V0IGFueSBuZXR3b3JrIHNtb290aGluZywganVzdCBjb25jZW5zdXMgY2x1c3RlcmluZyB3aXRoIHRoZSBmb2xsb3dpbmcgc3RlcHM6CgoxLiBSdW4gTk1GIHdpdGggayA9IFsyLDMsNF0sIDgwJSBvZiBzYW1wbGVzLCBhbmQgMTAwIHJlcGV0aXRpb25zLiBBc3NpZ24gbGFiZWwgdXNpbmcgbWF4IHNjb3JlLCBsaWtlIGV4cGxhaW5lZCBhYm92ZS4gCjIuIEZyb20gdGhlIDMwMCBwYXJ0aXRpb25pbmdzLCBidWlsZCB0aGUgcGF0aWVudCBzaW1pbGFyaXR5IG1hdHJpeCAoY29uc2Vuc3VzIGNsdXN0ZXJpbmcpCnNjcmlwdDogImhtYXRfdG9fY2NfY2x1c3Rlci5tIgozLiBBc3NpZ24gbGFiZWxzIHRvIHBhdGllbnRzICh1c2lnbiBhdmVyYWdlIGxpbmthZ2UgaGVyYXJjaGljYWwgY2x1c3RlcmluZykKCgpwLXZhbHVlID0gMC4yNTUxMjA1IAoKCipSdWJpayBzbW9vdGgqCgoxLiBjaGFuZ2UgZGF0YSBmb3JtYXQgdXNpbmcgMS0ydjMtQm9vbE1hdHJpY2VzX092YXJpYW4uUgoyLiBDb3B5IGZpbGVzIHRvIFJ1YmlrIGZvbGRlciAvVXNlcnMvZGlhbWFjLzEwLVJlc2VhcmNoLzRDdXJyZW50L0NMSU5HRU4vOXNvdXJjZS9ydWJpay9kYXRhIAozLiBJbXBvcnQgY3N2IGZpbGVzIGFzIE51bWVyaWMgTWF0cml4IGFuZCBzYXZlIHRoZSBzY3JpcHRzLiBDaGFuZ2UgdmFyaWFibGUgbmFtZSBhdCB0aGUgYm90dG9tLgo0LiBydW5fY2xpZ2VuLm0KdGVuc29yIGlzIHRoZSBzbW9vdGhlZCB2YWx1ZSBvbiB0aGUgbXV0YXRpb24gbWF0cml4IGZvciBlYWNoIHRydWUgdmFsdWUgaW4gdGhlIGNsaW5pY2FsIG1hdHJpeAoKCgoKCgpgYGB7cn0Kc291cmNlKCd+L0NMSUdFTl90Z2l0L1IvOS1PVi9TQWZyb21NYXRsYWJSZXN1bHRzT1YuUicsIGVjaG89VFJVRSkKYGBgCkFmdGVyIHJ1bmluZyB0aGUgYWJvdmUgSSBnb3QgdGhlc2UgcmVzdWx0czogCiAKcmVzdWx0czogCiAKTkJTIHB2YWx1ZSAJIDAuMDA0MDY4NDYgCk5NRiBwdmFsdWUgCSAwLjI2NTMyNzUgCk5CU19jYyBwdmFsdWUgCSAwLjAwNzQ0NjQ0MiAKQ0MgcHZhbHVlIAkgMC4yNTUxMjA1Cg==</div>
 
 
 
