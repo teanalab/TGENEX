@@ -1,0 +1,24 @@
+Prof Jimeng Sun
+http://sunlab.org/software
+
+
+Rubik & Marble Phenotyping Pipeline
+https://mysterious-caverns-96374.herokuapp.com
+
+
+marble and possibly limestone at:
+https://bitbucket.org/rchenmit/epic_phenotyper/src/d62180d34e337208b5615bc489a423476ee810b5?at=master
+cloned locally
+
+rubik
+https://mysterious-caverns-96374.herokuapp.com/rubik/
+dowloaded
+https://github.com/rchenmit/rubik
+matlab
+
+Prof Joyce Ho repository
+https://github.com/joyceho?tab=repositories
+
+
+my repository
+https://github.com/teanalab/CLIGEN.git

@@ -1,0 +1,305 @@
+---
+title: "Run the whole pipeline with LUAD using NetNorM smoothing and filtering genes"
+output: html_notebook
+---
+
+# Load Clinical
+
+These script reads the clinical variables that came with the [NetNorM](https://github.com/marineLM/NetNorM) package and dichotomizes them.
+```{r eval=FALSE}
+rm(list = ls())
+source("../R/1-createBoolClinical/1-createBoolClinical-LUAD.R")
+
+#431 rows including header
+  #20643 columns including patient ID
+  clinical <- read.table(file="/Users/diamac/DDfileSystem/10-Research/Current/CLINGEN/9source/CLIGEN/testing_NetNorM/data_NetNorM/TCGA/data_preprocessed/LUAD/X_labwithclin_ns1_NANA_NA_NA.csv",
+                         sep = ",", quote = "'",
+                         header = TRUE, stringsAsFactors = FALSE,
+                         skipNul = FALSE, blank.lines.skip = FALSE)
+  
+  row.names(clinical) <- clinical[,1]
+  clinical <- clinical[,c(20598:20643)]
+  
+  
+  #write.table(x = clinical[1:10,], file= "temp/10samplesClinical.csv")
+
+  survivalVars <- clinical[,1:2]
+  save(survivalVars,file= "data/survivalVars.RData")
+  
+  clinical <- clinical[,-c(1:2)]
+  
+createBoolClinical(clinical)
+
+```
+These are the list of 44 clinical variables that we will use for this analysis:
+
+"AGE"
+"SMOKING_PACK_YEARS"
+"SMOKING_YEARS"
+"HISTORY_OTHER_MALIGNANCY"
+"RESIDUAL_TUMOR"
+"LONGEST_DIMENSION"
+"SHORTEST_DIMENSION"
+"SPECIMEN_SECOND_LONGEST_DIMENSION"
+"AJCC_NODES_PATHOLOGIC_PN"
+"AJCC_TUMOR_PATHOLOGIC_PT"
+"AJCC_PATHOLOGIC_TUMOR_STAGE"
+"GENDER_FEMALE"
+"GENDER_MALE"
+"RACE_AMERICAN INDIAN OR ALASKA NATIVE"
+"RACE_ASIAN"
+"RACE_BLACK OR AFRICAN AMERICAN"
+"RACE_WHITE"
+"RACE_[Not Evaluated]"
+"RACE_[Unknown]"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Current Reformed Smoker"
+" Duration Not Specified"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Current reformed smoker for < or = 15 years"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Current reformed smoker for > 15 years"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Current smoker"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Lifelong Non-smoker"
+"ICD_O_3_HISTOLOGY_8140/3"
+"ICD_O_3_HISTOLOGY_8230/3"
+"ICD_O_3_HISTOLOGY_8250/3"
+"ICD_O_3_HISTOLOGY_8252/3"
+"ICD_O_3_HISTOLOGY_8253/3"
+"ICD_O_3_HISTOLOGY_8255/3"
+"ICD_O_3_HISTOLOGY_8260/3"
+"ICD_O_3_HISTOLOGY_8310/3"
+"ICD_O_3_HISTOLOGY_8480/3"
+"ICD_O_3_HISTOLOGY_8490/3"
+"ICD_O_3_HISTOLOGY_8507/3"
+"ICD_O_3_HISTOLOGY_8550/3"
+"ICD_O_3_SITE_C34.0"
+"ICD_O_3_SITE_C34.1"
+"ICD_O_3_SITE_C34.2"
+"ICD_O_3_SITE_C34.3"
+"ICD_O_3_SITE_C34.8"
+"ICD_O_3_SITE_C34.9"
+"AJCC_METASTASIS_PATHOLOGIC_PM_M0"
+"AJCC_METASTASIS_PATHOLOGIC_PM_M1"
+
+
+44 clinical variables: age, smoking pack years, smoking years, history other malignancy, residual tumor, longest dimension, shortest dimension, specimen second longest dimension, AJCC nodes pathologic PN, AJCC tumor pathologic PT, AJCC pathologic tumor stage, gender female, gender male, race american indian or alaska native, race Asian, race black or african American, race white, race [not evaluated], race [unknown], tobacco smoking history indicator current reformed smoker, duration not specified, tobacco smoking history indicator current reformed smoker for < or = 15 years, tobacco smoking history indicator current reformed smoker for > 15 years, tobacco smoking history indicator current smoker, tobacco smoking history indicator lifelong non-smoker, ICD-O-3 histology 8140/3, ICD-O-3 histology 8230/3, ICD-O-3 histology 8250/3, ICD-O-3 histology 8252/3, ICD-O-3 histology 8253/3, ICD-O-3 histology 8255/3, ICD-O-3 histology 8260/3, ICD-O-3 histology 8310/3, ICD-O-3 histology 8480/3, ICD-O-3 histology 8490/3, ICD-O-3 histology 8507/3, ICD-O-3 histology 8550/3, ICD-O-3 site c34.0, ICD-O-3 site c34.1, ICD-O-3 site c34.2, ICD-O-3 site c34.3, ICD-O-3 site c34.8, ICD-O-3 site c34.9, AJCC metastasis pathologic PM M0, and AJCC metastasis pathologic PM M1. 
+
+
+
+While dicotomizing, the following continuos variables where dichotomized using the jenks method:
+
+
+1. SHORTEST_DIMENSION  with n=5
+style: jenks
+  one of 70 possible partitions of this variable into 5 classes
+[0.1,0.2] (0.2,0.3] (0.3,0.4] (0.4,0.6]   (0.6,1] 
+       74        85       170        78        23 
+
+2. SPECIMEN_SECOND_LONGEST_DIMENSION
+style: jenks
+  one of 48,620 possible partitions of this variable into 10 classes
+[0.1,0.3] (0.3,0.5] (0.5,0.6] (0.6,0.7] (0.7,0.8] (0.8,0.9] (0.9,1.1] (1.1,1.3] 
+       23        54        52       122        68        29        48        13 
+(1.3,1.6]   (1.6,2] 
+       15         6 
+       
+3. LONGEST_DIMENSION
+style: jenks
+  one of 6,906,900 possible partitions of this variable into 10 classes
+[0.1,0.4] (0.4,0.7] (0.7,0.9] (0.9,1.1] (1.1,1.3] (1.3,1.6] (1.6,1.8] (1.8,2.1] 
+       14        46        64       151        44        51        22        20 
+(2.1,2.6]   (2.6,3] 
+       13         5 
+
+4. SMOKING_YEARS
+style: jenks
+  one of 1,101,716,330 possible partitions of this variable into 10 classes
+  [2,8]  (8,16] (16,22] (22,26] (26,31] (31,36] (36,42] (42,48] (48,56] (56,64] 
+      4      21      16      13      26     282      39      13      12       4 
+
+5. AGE
+style: jenks
+  one of 2,054,455,634 possible partitions of this variable into 10 classes
+[38,46] (46,52] (52,56] (56,60] (60,63] (63,67] (67,71] (71,75] (75,80] (80,88] 
+     15      24      32      63      41      54      68      65      45      23 
+
+
+6. SMOKING_PACK_YEARS
+
+style: jenks
+  one of 571,350,360,240 possible partitions of this variable into 10 classes
+   [0,12]   (12,23]   (23,33]   (33,44]   (44,54] (54,67.5] (67.5,84]  (84,104] 
+       29        46        47       190        45        29        17        16 
+(104,125] (125,154] 
+        9         2
+
+
+As a result we got 106 dichotomized clinical variables. Write a table explaining how.
+
+Check Fig5, 6, 7 and 78 from "temp/10-"
+
+
+# Load Mutation
+
+
+```{r eval=FALSE}
+load("../data/boolClinical.RData")
+boolMutation <- read.table(file="/Users/diamac/DDfileSystem/10-Research/Current/CLINGEN/9source/CLIGEN/testing_NetNorM/data_NetNorM/TCGA/data_preprocessed/LUAD/X_labwithclin_ns1_NANA_NA_NA.csv",
+                       sep = ",", quote = "'",
+                       header = TRUE, stringsAsFactors = FALSE, 
+                       skipNul = FALSE, blank.lines.skip = FALSE)
+
+row.names(boolMutation) <- boolMutation[,1]
+boolMutation <- boolMutation[,c(2:20597)]
+mutationSmooth <- boolMutation
+
+save(mutationSmooth,file= "../data/mutationSmooth.RData")
+
+```
+
+
+#Filter genes
+
+
+I am summarizing here how I discarded some data:
+
+First, the initial dataset has 430 patients, 20596 genes, and 106 dichotomized clinical variables (these are the binary representation of our 44 clinical variables).
+Attached the pdf with the frequencies of the tables. (frequencies_beforeFiltering.pdf)
+
+To reduce dimensionality I did the following:
+- patients with less than 6 mutated genes were discarded
+- genes present in less than 31 patients were discarded
+- clinical variables in less than 6 patients were discarded
+
+The dataset after filtering has 409 patients, 433 genes, 88 dichotomized clinical variables.
+Attached frequencies_afterFiltering.pdf
+
+values for "R/0-ConfigurationVariables.R" are:
+```{r eval=FALSE}
+minNumOfPatientsPerGene <<- 30   #5 for ~500 patients and genes in BRCA
+                                #20 -> 1456
+minNumOfMutationsPerPatient <<- 5 #5
+minNumOfPatientsPerClinical <<- 5 #5
+```
+
+
+```{r}
+rm(list=ls())
+load("../data/boolClinical.RData")
+load("../data/mutationSmooth.RData")
+save(boolClinical, file="../data/boolClinicalAll.RData")
+save(mutationSmooth, file="../data/mutationSmoothAll.RData")
+source('../R/0-ConfigurationVariables.R')
+source('../R/1-FilterPxGxC.R')
+list[mutationSmooth, boolClinical] <- filterGenesMutation(mutationSmooth, boolClinical, PlotFrequencies=T) #PDFs on temp
+
+save(boolClinical, file="../data/boolClinicalFil.RData")
+save(mutationSmooth, file="../data/mutationSmoothFil.RData")
+```
+
+
+
+
+# Prepare data to construct tensor on Matlab
+
+```{r}
+rm(list = ls()[-c(which(ls() %in% c("mutationSmooth", "boolClinical")))])
+patients <- row.names(boolClinical) 
+save(patients,file= "../data/patients.RData")
+
+#load(file="../data/boolClinicalFil.RData")
+names(boolClinical) 
+
+tClini = t(boolClinical)
+write.csv2(tClini, file = "../MATLAB-RUBIK/data/new/4-Matlab-binaC.csv",row.names = FALSE)
+tBina = t(mutationSmooth)
+write.table(tBina, file = "../MATLAB-RUBIK/data/new/4-Matlab-binaM.csv", sep =';', dec = '.', row.names = FALSE )
+
+```
+
+# Run tensor factorization with rubik
+
+Move the files to *"MATLAB-RUBIK/data/"* and update the readme file.
+
+Run the script:
+*"MATLAB-RUBIK/rubik/run_cligen.m"*
+
+The output will be located on *"MATLAB-RUBIK/rubikOutput/"*
+
+
+'# Plot the components not necesary at this point
+
+'```{r eval=FALSE}
+'source("R/3-tSNE_visualization.R'")
+'```
+
+'[resulting plot](https://plot.ly/~datad/7/#/)
+
+
+# Clustering 
+
+```{r}
+#load data
+source("R/3-writeFactors.R")
+source("R/4-kmeans.R")
+source("R/5-getPvalsSurvAnal.R")
+```
+
+## Results
+
+The best Kaplan-Meier was optained by running "R/6-survivalAnalysisKM.R" with parameters:
+
+```{r}
+source("R/6-survivalAnalysisKM.R")
+
+k = 14
+r = 60
+
+
+threshold_groups = 10 #10 or 3
+
+list[pval, ok, patiF, nFactors] =  survivalAnalysis(r, k, threshold_groups, plots=1, plotName, location = "bottomright")
+
+```
+
+
+
+# Compare with NMF
+
+
+## Just clinical
+
+To compare our results, we use the dichotomized and **filtered matrix** of clinical variables.
+
+
+Copy temp files.
+
+```{r eval=F}
+rm(list = ls())
+load("../data/patients.RData")
+load("../data/boolClinicalFil.RData")
+source("../R/NFM/3-RunNMF.R")
+runNMF(boolClinical)
+source("../R/NFM/3-writeFactors.R")
+source("../R/4-kmeans.R")
+source("../R/NMF/5-getPvalsSurvAnal.R")
+source("../R/NMF/6-survivalAnalysisKM.R")
+```
+
+
+# Compare with NBS
+
+
+To compare our results, we use the data that came with NBS.
+For survival analysis, we faced a problem. This is that the number of patients that have survival data on the RTCGA package are just 301. 
+I could not find the survival data of more patients so I reduced the analysis to these patients.
+
+Run NBS on matlab "/Users/diamac/GitLab/NBS_cligen/nbs_release_v02_wc" which already gives the clusters as output
+
+```{r eval=F}
+rm(list = ls())
+source("../R/NBS/5-getPvalsNBS.R")
+source("../R/NBS/6-survivalAnalysisKM.R")
+```
+
+
+
+

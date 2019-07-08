@@ -1,0 +1,255 @@
+---
+title: "Run the whole pipeline with LUAD using NetNorM smoothing"
+output: html_notebook
+---
+
+# Load Clinical
+
+These script reads the clinical variables that came with the [NetNorM](https://github.com/marineLM/NetNorM) package and dichotomizes them.
+```{r eval=FALSE}
+rm(list = ls())
+source("../R/1-createBoolClinical/1-createBoolClinical-LUAD.R")
+
+#431 rows including header
+  #20643 columns including patient ID
+  clinical <- read.table(file="/Users/diamac/DDfileSystem/10-Research/Current/CLINGEN/9source/CLIGEN/testing_NetNorM/data_NetNorM/TCGA/data_preprocessed/LUAD/X_labwithclin_ns1_NANA_NA_NA.csv",
+                         sep = ",", quote = "'",
+                         header = TRUE, stringsAsFactors = FALSE,
+                         skipNul = FALSE, blank.lines.skip = FALSE)
+  
+  row.names(clinical) <- clinical[,1]
+  clinical <- clinical[,c(20598:20643)]
+  
+  
+  #write.table(x = clinical[1:10,], file= "temp/10samplesClinical.csv")
+
+  survivalVars <- clinical[,1:2]
+  save(survivalVars,file= "data/survivalVars.RData")
+  
+  clinical <- clinical[,-c(1:2)]
+  
+createBoolClinical(clinical)
+
+```
+These are the list of 44 clinical variables that we will use for this analysis:
+
+"AGE"
+"SMOKING_PACK_YEARS"
+"SMOKING_YEARS"
+"HISTORY_OTHER_MALIGNANCY"
+"RESIDUAL_TUMOR"
+"LONGEST_DIMENSION"
+"SHORTEST_DIMENSION"
+"SPECIMEN_SECOND_LONGEST_DIMENSION"
+"AJCC_NODES_PATHOLOGIC_PN"
+"AJCC_TUMOR_PATHOLOGIC_PT"
+"AJCC_PATHOLOGIC_TUMOR_STAGE"
+"GENDER_FEMALE"
+"GENDER_MALE"
+"RACE_AMERICAN INDIAN OR ALASKA NATIVE"
+"RACE_ASIAN"
+"RACE_BLACK OR AFRICAN AMERICAN"
+"RACE_WHITE"
+"RACE_[Not Evaluated]"
+"RACE_[Unknown]"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Current Reformed Smoker"
+" Duration Not Specified"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Current reformed smoker for < or = 15 years"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Current reformed smoker for > 15 years"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Current smoker"
+"TOBACCO_SMOKING_HISTORY_INDICATOR_Lifelong Non-smoker"
+"ICD_O_3_HISTOLOGY_8140/3"
+"ICD_O_3_HISTOLOGY_8230/3"
+"ICD_O_3_HISTOLOGY_8250/3"
+"ICD_O_3_HISTOLOGY_8252/3"
+"ICD_O_3_HISTOLOGY_8253/3"
+"ICD_O_3_HISTOLOGY_8255/3"
+"ICD_O_3_HISTOLOGY_8260/3"
+"ICD_O_3_HISTOLOGY_8310/3"
+"ICD_O_3_HISTOLOGY_8480/3"
+"ICD_O_3_HISTOLOGY_8490/3"
+"ICD_O_3_HISTOLOGY_8507/3"
+"ICD_O_3_HISTOLOGY_8550/3"
+"ICD_O_3_SITE_C34.0"
+"ICD_O_3_SITE_C34.1"
+"ICD_O_3_SITE_C34.2"
+"ICD_O_3_SITE_C34.3"
+"ICD_O_3_SITE_C34.8"
+"ICD_O_3_SITE_C34.9"
+"AJCC_METASTASIS_PATHOLOGIC_PM_M0"
+"AJCC_METASTASIS_PATHOLOGIC_PM_M1"
+
+
+While dicotomizing, the following continuos variables where dichotomized using the jenks method:
+
+
+1. SHORTEST_DIMENSION  with n=5
+style: jenks
+  one of 70 possible partitions of this variable into 5 classes
+[0.1,0.2] (0.2,0.3] (0.3,0.4] (0.4,0.6]   (0.6,1] 
+       74        85       170        78        23 
+
+2. SPECIMEN_SECOND_LONGEST_DIMENSION
+style: jenks
+  one of 48,620 possible partitions of this variable into 10 classes
+[0.1,0.3] (0.3,0.5] (0.5,0.6] (0.6,0.7] (0.7,0.8] (0.8,0.9] (0.9,1.1] (1.1,1.3] 
+       23        54        52       122        68        29        48        13 
+(1.3,1.6]   (1.6,2] 
+       15         6 
+       
+3. LONGEST_DIMENSION
+style: jenks
+  one of 6,906,900 possible partitions of this variable into 10 classes
+[0.1,0.4] (0.4,0.7] (0.7,0.9] (0.9,1.1] (1.1,1.3] (1.3,1.6] (1.6,1.8] (1.8,2.1] 
+       14        46        64       151        44        51        22        20 
+(2.1,2.6]   (2.6,3] 
+       13         5 
+
+4. SMOKING_YEARS
+style: jenks
+  one of 1,101,716,330 possible partitions of this variable into 10 classes
+  [2,8]  (8,16] (16,22] (22,26] (26,31] (31,36] (36,42] (42,48] (48,56] (56,64] 
+      4      21      16      13      26     282      39      13      12       4 
+
+5. AGE
+style: jenks
+  one of 2,054,455,634 possible partitions of this variable into 10 classes
+[38,46] (46,52] (52,56] (56,60] (60,63] (63,67] (67,71] (71,75] (75,80] (80,88] 
+     15      24      32      63      41      54      68      65      45      23 
+
+
+6. SMOKING_PACK_YEARS
+
+style: jenks
+  one of 571,350,360,240 possible partitions of this variable into 10 classes
+   [0,12]   (12,23]   (23,33]   (33,44]   (44,54] (54,67.5] (67.5,84]  (84,104] 
+       29        46        47       190        45        29        17        16 
+(104,125] (125,154] 
+        9         2
+
+
+As a result we got 106 dichotomized clinical variables. Write a table explaining how.
+
+Check Fig5, 6, 7 and 78 from "temp/10-"
+
+
+```{r}
+load("../data/boolClinical.RData")
+
+```
+
+# Load Mutation
+
+
+```{r}
+boolMutation <- read.table(file="/Users/diamac/DDfileSystem/10-Research/Current/CLINGEN/9source/CLIGEN/testing_NetNorM/data_NetNorM/TCGA/data_preprocessed/LUAD/X_labwithclin_ns1_NANA_NA_NA.csv",
+                       sep = ",", quote = "'",
+                       header = TRUE, stringsAsFactors = FALSE, 
+                       skipNul = FALSE, blank.lines.skip = FALSE)
+
+row.names(boolMutation) <- boolMutation[,1]
+boolMutation <- boolMutation[,c(2:20597)]
+mutationSmooth <- boolMutation
+
+save(mutationSmooth,file= "../data/mutationSmooth.RData")
+
+```
+
+# Prepare data to construct tensor on Matlab
+
+```{r}
+rm(list = ls()[-c(which(ls() %in% c("mutationSmooth", "boolClinical")))])
+patients <- row.names(boolClinical) 
+save(patients,file= "../data/patients.RData")
+
+
+tClini = t(boolClinical)
+write.csv2(tClini, file = "../temp/4-Matlab-binaC.csv",row.names = FALSE)
+tBina = t(mutationSmooth)
+write.table(tBina, file = "../temp/10-binaM.csv", sep =';', dec = '.', row.names = FALSE )
+
+```
+
+# Run tensor factorization with rubik
+
+Move the files to *"MATLAB-RUBIK/data/"* and update the readme file.
+
+Run the script:
+*"MATLAB-RUBIK/rubik/run_cligen.m"*
+
+The output will be located on *"MATLAB-RUBIK/rubikOutput/"*
+
+
+# Plot the components
+
+```{r eval=FALSE}
+source("R/3-tSNE_visualization.R'")
+```
+
+[resulting plot](https://plot.ly/~datad/7/#/)
+
+
+# Clustering 
+
+```{r}
+#load data
+source("R/3-writeFactors.R")
+source("R/4-kmeans.R")
+source("R/5-getPvalsSurvAnal.R")
+```
+
+
+
+
+# Other examples
+
+
+```{r}
+source("R/0-ConfigurationVariables.R")
+minNumOfMutationsPerPatient = 5
+minNumOfPatientsPerGene = 5
+
+source("R/1-ReadRawFiles.R")
+# 1- read the raw files from the 'rawData' folder and store them in 'dataFile'
+readBRCAFiles (dataFile = "temp/readBRCAFiles.RData",
+               rawMutationFile="rawData/data_mutations_extended.txt",
+               rawClinicalFile="rawData/BRCA.clin.merged.txt")
+
+# 2- filter the clinical variables specified in "rawData/clinical_useful.csv" and "rawData/merge_useful.csv"
+filterClinicalVariables()
+load("data/tensorClinical.RData")
+
+source("R/1-createBoolMutation.R")
+createBoolMutation(boolOrBin="bina")
+load("data/patients.RData")
+load("data/genes.RData")
+load("data/binaMutation.RData")
+
+#Filter tensor clinical
+load("data/tensorClinical.RData")
+row.names(tensorClinical) <- tensorClinical$patient.bcr_patient_barcode
+tensorClinical <- tensorClinical[patients, ]
+save(tensorClinical, file="data/tensorClinical.RData")
+
+
+#Dichotomize Clinical vars
+
+
+# Step 2 - Construct the tensor
+source("R/2-BoolMatrices.R")
+#source("R/2-Smooth_MutationM_SVD.R")
+#source("R/2-Construct_tensor.R")
+
+# Step 3 - Tensor Factorization
+#source("R/3-RunTF.R")
+
+
+
+
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
