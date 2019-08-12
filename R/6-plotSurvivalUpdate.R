@@ -343,13 +343,11 @@ plot.Survival4paper <- function(coxFit, mfit, mainTitle=NULL,
                                 labelClu = c("group1","group2", "group3"),
                                 centerT = 0.4,
                                 legendTitle = "p-value =",
-                                font_size_times = 1.3, 
+                                font_size_times = 1.3,
                                 legendbg = "white")
 {
   require("survival")
-  par( mgp=c(1.8,0.3,0), #axis title, axis labels and axis line
-       mai=c(0.7,0.7,0.5,0.5) ) #c(bottom, left, top, right)
-  print(summary(coxFit))
+  #print(summary(coxFit))
   resCox <- summary(coxFit)
   pVal<-format.pval(resCox$sctest[3], digits = 3)
   plot(mfit,
@@ -398,7 +396,7 @@ plot.Survival4paper <- function(coxFit, mfit, mainTitle=NULL,
            fill=colorsL, #boxes
            cex=font_size_times,
            title = paste(legendTitle, pVal),
-           title.col="black", 
+           title.col="black",
            bg = legendbg)
   }
 }

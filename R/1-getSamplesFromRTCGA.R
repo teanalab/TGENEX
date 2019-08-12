@@ -6,6 +6,7 @@ library(RTCGA)
 checkTCGA('Dates')
 #From my gist get entrez from hugo symbol
 library(org.Hs.eg.db)
+library(dplyr)
 
 
 (cohorts <- infoTCGA() %>%
@@ -250,71 +251,78 @@ survivalFromRTCGA <- function(disease)
   } else if(disease == "COAD") {
     survivalTCGA(COAD.clinical) -> survivalVars
   } else {
-    stop("disease not included")
+    eval(parse(text= paste("survivalTCGA(",disease,".clinical) -> survivalVars", sep='')))
   }
   return(survivalVars)
 }
 
 
-disease = 'BRCA'
-dir.create(disease)
-X = mutationFromRTCGA(disease, includeSilentMutations)
-binaMutation <- X[[1]]
-patients <- X[[2]]
-rm(X)
 
-if(!allGenes){
-  print( "***********\nTO FILTER RUN THE SCRIPTS IN THE scripts2filterData FOLDER.\n***************\n" )
-}
+# testing functions #############
 
-
-#get gene expression
-
-
-
-#get clinical data
-
-
-
-
-#get survival
-survivalVars <- survivalFromRTCGA(disease)
-row.names(survivalVars) <- survivalVars$bcr_patient_barcode
-patients <- intersect(patients, row.names(survivalVars))
-survivalData <- survivalVars[patients,-2]
-
-#Plot for paper - complete example in SurvivalAnalysis.R
-plotName<-paste0(disease,"/OS_Kaplan-Meier.pdf")
-pdf( file = plotName,  onefile = TRUE, width = 9, height = 7)
-## Kaplan-Meier Survival Curves
-kmTCGA(survivalData)
-dev.off()
-
-#write mutation to csv file for python script
-binaMutation <- binaMutation[patients,]
-tBina = t(binaMutation)
-if(!entrez){
-  #remove the genes that have no entrez eventhough we will use only gene symbol?
-  #no, because, these information can be useful and if we discover something that the other method
-  #cannot because it is not in the protein networks, then our method is in advantage compare with the others
-  write.table(tBina, file = paste0(disease,"/mutation.csv"),
-              sep =';', dec = '.', row.names = T, col.names = T )
-} else {
-  stop("I have not tested these functionality, but I have the script fromSym2Entrez on the scripts2smoothData project")
-
-}
-
-write(c("Mutations table\nNumber of patients: ", dim(binaMutation)[1],
-        "Number of genes: ", dim(binaMutation)[2]),
-        file=paste0(disease, "/dimensions.txt"), append=TRUE )
-
-
-#write survival data for python script
-write.table(survivalData, file = paste0(disease, "/survival.csv"), sep =';',
-            dec = '.', row.names = T, col.names = T )
-
-write(c("\nClinical table\nNumber of patients: ", dim(survivalData)[1]),
-      file=paste0(disease, "/dimensions.txt"), append=TRUE )
+#
+# disease = cohorts[1]
+# dir.create(disease)
+# #X = mutationFromRTCGA(disease, includeSilentMutations)
+# #binaMutation <- X[[1]]
+# #patients <- X[[2]]
+# #rm(X)
+#
+# if(!allGenes){
+#   print( "***********\nTO FILTER RUN THE SCRIPTS IN THE scripts2filterData FOLDER.\n***************\n" )
+# }
+#
+#
+# #get gene expression
+#
+#
+#
+# #get clinical data
+#
+#
+#
+#
+# #get survival
+# survivalVars <- survivalFromRTCGA(disease)
+# row.names(survivalVars) <- survivalVars$bcr_patient_barcode
+# #patients <- intersect(patients, row.names(survivalVars))
+# #survivalData <- survivalVars[patients,-2]
+# survivalData <- survivalVars
+#
+# cat(dim(survivalVars))
+#
+# #Plot for paper - complete example in SurvivalAnalysis.R
+# plotName<-paste0(disease,"/OS_Kaplan-Meier.pdf")
+# pdf( file = plotName,  onefile = TRUE, width = 9, height = 7)
+# ## Kaplan-Meier Survival Curves
+# kmTCGA(survivalData)
+# dev.off()
+#
+# #write mutation to csv file for python script
+# binaMutation <- binaMutation[patients,]
+# tBina = t(binaMutation)
+# if(!entrez){
+#   #remove the genes that have no entrez eventhough we will use only gene symbol?
+#   #no, because, these information can be useful and if we discover something that the other method
+#   #cannot because it is not in the protein networks, then our method is in advantage compare with the others
+#   write.table(tBina, file = paste0(disease,"/mutation.csv"),
+#               sep =';', dec = '.', row.names = T, col.names = T )
+# } else {
+#   stop("I have not tested these functionality, but I have the script fromSym2Entrez on the scripts2smoothData project")
+#
+# }
+#
+# write(c("Mutations table\nNumber of patients: ", dim(binaMutation)[1],
+#         "Number of genes: ", dim(binaMutation)[2]),
+#         file=paste0(disease, "/dimensions.txt"), append=TRUE )
+#
+#
+# #write survival data for python script
+# write.table(survivalData, file = paste0(disease, "/survival.csv"), sep =';',
+#             dec = '.', row.names = T, col.names = T )
+#
+# write(c("\nClinical table\nNumber of patients: ", dim(survivalData)[1]),
+#       file=paste0(disease, "/dimensions.txt"), append=TRUE )
 
 
 
@@ -337,9 +345,6 @@ write(c("\nClinical table\nNumber of patients: ", dim(survivalData)[1]),
 #
 #   #get survival
 #   survivalVars <- survivalFromRTCGA(disease)
-#   row.names(survivalVars) <- survivalVars$bcr_patient_barcode
-#   patients <- intersect(patients, row.names(survivalVars))
-#   survivalData <- survivalVars[patients,-2]
 #
 #   #Plot for paper - complete example in SurvivalAnalysis.R
 #   plotName<-paste0(disease,"/OS_Kaplan-Meier.pdf")
@@ -374,4 +379,34 @@ write(c("\nClinical table\nNumber of patients: ", dim(survivalData)[1]),
 #   write(c("\nClinical table\nNumber of patients: ", dim(survivalData)[1]),
 #         file=paste0(disease, "/dimensions.txt"), append=TRUE )
 # }
+
+
+
+
+
+# # ---- main script get survival data------
+# #1- Example how to get Breast Cancer mutation data using RTCGA
+(diseases = cohorts[11:38])
+
+for (i in seq_along(diseases))
+{
+  disease = diseases[i]
+  dir.create(disease)
+
+  #get survival
+  survivalVars <- survivalFromRTCGA(disease)
+  row.names(survivalVars) <- survivalVars$bcr_patient_barcode
+  survivalData <- survivalVars
+
+  #Plot for paper - complete example in SurvivalAnalysis.R
+  plotName<-paste0(disease,"/OS_Kaplan-Meier.pdf")
+  pdf( file = plotName,  onefile = TRUE, width = 9, height = 7)
+  ## Kaplan-Meier Survival Curves
+  kmTCGA(survivalData)
+  dev.off()
+
+
+  #write survival data object
+  save(survivalData, file = paste0(disease, "/survival.Rd") )
+}
 
