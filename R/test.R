@@ -1,91 +1,171 @@
+load("~/DDfileSystem/10-Research/1-Current/CLINGEN/9source/CLIGEN/git_teana/CLIGEN/allmRNA.RData")
+
+initialScriptBRCAonly <-function(){
+  #all with BRCA olny
+  row.names( BRCA.mRNA$bcr_patient_barcode )
+  BRCA.mRNA = BRCA.mRNA[, -1]
+  BRCA.mRNA[0:4,0:4]
 
 
-row.names( BRCA.mRNA$bcr_patient_barcode )
+  library(gplots)
 
-BRCA.mRNA = BRCA.mRNA[, -1]
+  heatmap.2(t(BRCA.mRNA)[1:10,1:10]) # Shortcut to final result
 
 
-BRCA.mRNA[0:4,0:4]
+  y = BRCA.mRNA
+
+
+  #remove NA
+  anyNA(y)
+  sum(is.na(y))
+
+  #1695
+  #delete columns because patients are more valuable
+  delCols <- apply(y, 1, anyNA )
+  sum(delCols)
+
+  remNA = which(delCols)
+  y <- y[,-remNA]
+
+  anyNA(y)
+
+  ## Row- and column-wise clustering
+  hr <- hclust(as.dist(1-cor(t(y), method="pearson")), method="complete")
+  hc <- hclust(as.dist(1-cor(y, method="spearman")), method="complete")
+
+  library(dendextend)
+  library(circlize)
+
+  # create a dendrogram
+  dend <- as.dendrogram(hr)
+
+  # modify the dendrogram to have some colors in the branches and labels
+  dend <- dend %>%
+    color_branches(k=4) %>%
+    color_labels
+
+  # plot the radial plot
+  par(mar = rep(0,4))
+  # circlize_dendrogram(dend, dend_track_height = 0.8)
+  circlize_dendrogram(dend, labels_track_height = NA, dend_track_height = .4)
+  #circlize_dendrogram(dend, labels=F, labels_track_height = NA, dend_track_height = .4)
+
+
+  pdf( file = "BC_dendo.pdf",  onefile = TRUE, width = 9, height = 9)
+  #pdf( file = paste0(figureKs,"/kaplan-NBS",(i+1),".pdf"),  onefile = TRUE, width = 9, height = 7)
+  #tiff(file = "temp/79-kaplan-NMF4_num.tiff",  width = 9, height = 7, units = 'in', res=300)
+  circlize_dendrogram(dend, labels=F, labels_track_height = NA, dend_track_height = .4)
+  dev.off()
+}
+
+
+
+#' Title
+#'
+#' @param TCGA_DB
+#' @param fileName
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' library(gplots)
+#' library(dendextend)
+#' library(circlize)
+#' TCGA_DB = COAD.mRNA
+#' fileName = "COAD_dendo.pdf"
+#' saveDendograms(TCGA_DB,fileName)
+saveDendograms <- function( TCGA_DB, fileName ){
+  row.names(TCGA_DB) <- TCGA_DB$bcr_patient_barcode
+  TCGA_DB = TCGA_DB[, -1]
+
+  #remove NA
+  if(anyNA(TCGA_DB)){
+    nCols = dim(TCGA_DB)[2]
+    cat(sum(is.na(TCGA_DB)), " NA values found for ", fileName, "\n")
+    #delete genes because patients are more valuable
+    delCols <- apply(TCGA_DB, 2, anyNA )
+    cat(sum(delCols), " genes to be deleted\n")
+    remNA = which(delCols)
+    TCGA_DB <- TCGA_DB[,-remNA]
+    cat( (dim(TCGA_DB)[2] -  nCols), "genes were deleted", "\n")
+  }
+  if ( anyNA(TCGA_DB) ){
+    stop("ERROR: Table stll have NA values for ", fileName)
+  }
+
+  ## Row- and column-wise clustering
+  hr <- hclust(as.dist(1-cor(t(TCGA_DB), method="pearson")), method="complete")
+  #hc <- hclust(as.dist(1-cor(TCGA_DB, method="spearman")), method="complete")
+  # create a dendrogram
+  dend <- as.dendrogram(hr)
+  # modify the dendrogram to have some colors in the branches and labels
+  dend <- dend %>%
+    color_branches(k=4) %>%
+    color_labels
+  # plot the radial plot
+  par(mar = rep(0,4))
+  # circlize_dendrogram(dend, dend_track_height = 0.8)
+  #circlize_dendrogram(dend, labels_track_height = NA, dend_track_height = .4)
+  circlize_dendrogram(dend, labels=F, labels_track_height = NA, dend_track_height = .4)
+
+  pdf( file = fileName,  onefile = TRUE, width = 9, height = 9)
+  #pdf( file = paste0(figureKs,"/kaplan-NBS",(i+1),".pdf"),  onefile = TRUE, width = 9, height = 7)
+  #tiff(file = "temp/79-kaplan-NMF4_num.tiff",  width = 9, height = 7, units = 'in', res=300)
+  circlize_dendrogram(dend, labels=F, labels_track_height = NA, dend_track_height = .4)
+  dev.off()
+}
+
+
 
 
 library(gplots)
+library(dendextend)
+library(circlize)
+TCGA_DB = COAD.mRNA
+fileName = "COAD_dendo.pdf"
+saveDendograms(TCGA_DB,fileName)
 
-heatmap.2(t(BRCA.mRNA)) # Shortcut to final result
+TCGA_DB = COADREAD.mRNA
+fileName = "COADREAD.pdf"
+saveDendograms(TCGA_DB,fileName)
 
+TCGA_DB = GBMLGG.mRNA
+fileName = "GBMLGG.pdf"
+saveDendograms(TCGA_DB,fileName)
 
-## Row- and column-wise clustering
-hr <- hclust(as.dist(1-cor(t(y), method="pearson")), method="complete")
-hc <- hclust(as.dist(1-cor(y, method="spearman")), method="complete")
-#
+TCGA_DB = KIPAN.mRNA
+fileName = "KIPAN.pdf"
+saveDendograms(TCGA_DB,fileName)
 
+TCGA_DB = KIRC.mRNA
+fileName = "KIRC.pdf"
+saveDendograms(TCGA_DB,fileName)
 
+TCGA_DB = KIRP.mRNA
+fileName = "KIRP.pdf"
+saveDendograms(TCGA_DB,fileName)
 
-require(graphics)
+TCGA_DB = LGG.mRNA
+fileName = "LGG.pdf"
+saveDendograms(TCGA_DB,fileName)
 
-# a 2-dimensional example
-x <- rbind(matrix(rnorm(100, sd = 0.3), ncol = 2),
-           matrix(rnorm(100, mean = 1, sd = 0.3), ncol = 2))
-colnames(x) <- c("x", "y")
-(cl <- kmeans(x, 2))
-plot(x, col = cl$cluster)
-points(cl$centers, col = 1:2, pch = 8, cex = 2)
+TCGA_DB = LUAD.mRNA
+fileName = "LUAD.pdf"
+saveDendograms(TCGA_DB,fileName)
 
-# sum of squares
-ss <- function(x) sum(scale(x, scale = FALSE)^2)
+TCGA_DB = LUSC.mRNA
+fileName = "LUSC.pdf"
+saveDendograms(TCGA_DB,fileName)
 
-## cluster centers "fitted" to each obs.:
-fitted.x <- fitted(cl);  head(fitted.x)
-resid.x <- x - fitted(cl)
+TCGA_DB = OV.mRNA
+fileName = "OV.pdf"
+saveDendograms(TCGA_DB,fileName)
 
-## Equalities : ----------------------------------
-cbind(cl[c("betweenss", "tot.withinss", "totss")], # the same two columns
-      c(ss(fitted.x), ss(resid.x),    ss(x)))
-stopifnot(all.equal(cl$ totss,        ss(x)),
-          all.equal(cl$ tot.withinss, ss(resid.x)),
-          ## these three are the same:
-          all.equal(cl$ betweenss,    ss(fitted.x)),
-          all.equal(cl$ betweenss, cl$totss - cl$tot.withinss),
-          ## and hence also
-          all.equal(ss(x), ss(fitted.x) + ss(resid.x))
-)
+TCGA_DB = READ.mRNA
+fileName = "READ.pdf"
+saveDendograms(TCGA_DB,fileName)
 
-kmeans(x,1)$withinss # trivial one-cluster, (its W.SS == ss(x))
-
-## random starts do help here with too many clusters
-## (and are often recommended anyway!):
-(cl <- kmeans(x, 5, nstart = 25))
-plot(x, col = cl$cluster)
-points(cl$centers, col = 1:5, pch = 8)
-
-
-# COAD.mRNA
-#
-# COADREAD.mRNA
-#
-# GBMLGG.mRNA
-#
-#
-# KIPAN.mRNA
-#
-#
-# KIRC.mRNA
-#
-#
-# KIRP.mRNA
-#
-#
-# LGG.mRNA
-#
-#
-# LUAD.mRNA
-#
-#
-# LUSC.mRNA
-#
-# OV.mRNA
-#
-#
-# READ.mRNA
-#
-#
-# UCEC.mRNA
+TCGA_DB = UCEC.mRNA
+fileName = "UCEC.pdf"
+saveDendograms(TCGA_DB,fileName)
