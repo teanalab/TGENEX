@@ -1,5 +1,5 @@
 ---
-# CLIGEN: an integrative analysis of CLInical and GENomic data for disease subtyping
+# TGENEX: Tensor based integration of clinical data, gene mutation, and GEne EXpression
 ---
 
 # Step 1 - Obtain the raw data
