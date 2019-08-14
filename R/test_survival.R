@@ -1,29 +1,36 @@
 # run survival analisis on datasets
 
-
 library(plyr)
 library(survival)
 library(classInt) #for sturges
 source("R/6-plotSurvivalUpdate.R") #for survival plot
-#library("missForest")
-#library("survAUC")
-#library("prodlim")
-#library("survminer")
-#library("gsubfn")
 
 # parameters ##########
 k=3
-
-
+minimumGroupSize = 4
+foldermRNA="R/clean_mRNA/"
+outFolder = "kmplots/"
 #1. get list of diseases
-diseases = list.files(path="dendograms/")
-diseases = gsub(".pdf", "", diseases, fixed = TRUE)
+diseases = list.files(path=foldermRNA)
+diseases = gsub(".RData", "", diseases, fixed = TRUE)
+
 
 plotIdealSurvival <- function(disease){
   #load survival data
-  load(paste0(disease,"/survival.Rd",sep=''))
+  load( paste0("survival/",disease,"/survival.Rd",sep='') )
 
-  #TODO in a different function get samples from dendograms to mixed it up
+  #load mRNA data
+  load(paste0(foldermRNA, "/", disease,".RData"))
+  eval(parse(text= paste0("TCGA_DB <- ",disease,".mRNA")))
+
+  # find intersection between survival and mRNA
+  patients <- row.names(TCGA_DB)
+  p_s <-survivalData$bcr_patient_barcode
+  patients <- intersect(patients, p_s)
+
+  # update tables
+  survivalData <- survivalData[patients,]
+
 
   # get survival groups from time
   aInt <- classIntervals(survivalData$times, n=k, style = "jenks")
@@ -45,7 +52,7 @@ plotIdealSurvival <- function(disease){
 
   # FINALLY, plot
   tr = table(survivalData$group)
-  fileName = paste0("kmplots/",disease,".pdf")
+  fileName = paste0( outFolder,disease,"_tr.pdf" )
   #Plot for paper
   pdf( file = fileName,  onefile = TRUE, width = 9, height = 7)
   plot.Survival4paper(coxFit, mfit, location = "topright",
@@ -56,7 +63,23 @@ plotIdealSurvival <- function(disease){
   dev.off()
 
   #crop borders to fit paper
-  system(paste("pdfcrop", fileName, fileName))
+  #system( paste("pdfcrop", fileName, fileName) )
+
+  fileName = paste0( outFolder,disease,"_br.pdf" )
+  #Plot for paper
+  pdf( file = fileName,  onefile = TRUE, width = 9, height = 7)
+  plot.Survival4paper(coxFit, mfit, location = "bottomright",
+                      colorsP = c25[1:k],
+                      colorsL = c25[1:k],
+                      labelClu = paste("subtype ", seq(k), " (", tr, ")", sep='') ,
+                      font_size_times = 1.8, legendbg = "gray98")
+  dev.off()
+
+  #crop borders to fit paper
+  #system( paste("pdfcrop", fileName, fileName) )
+
+  save(survivalData, file = paste0(outFolder,disease,"_survival.RData"))
+
 }
 
 

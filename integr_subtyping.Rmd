@@ -1,0 +1,35 @@
+---
+title: "Subtyping on integrated data"
+output: html_notebook
+---
+
+
+```{r}
+source("R/integr_subtyping.R")
+
+for (i in seq_along(diseases))
+{
+  disease = diseases[i]
+  plotDendoSurvival(disease)
+}
+
+```
+
+
+
+Now generate integrated clusters
+
+
+```{r}
+source("R/integr_subtyping.R")
+
+for (i in seq_along(diseases))
+{
+  disease = diseases[i]
+  plotIntegraSurvival(disease)
+}
+
+```
+
+
+

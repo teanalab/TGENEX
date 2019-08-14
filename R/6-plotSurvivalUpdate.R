@@ -348,6 +348,8 @@ plot.Survival4paper <- function(coxFit, mfit, mainTitle=NULL,
 {
   require("survival")
   #print(summary(coxFit))
+  par( mgp=c(1.8,0.3,0), #axis title, axis labels and axis line
+       mai=c(2.0,2.0,1.0,1.0) ) #c(bottom, left, top, right)
   resCox <- summary(coxFit)
   pVal<-format.pval(resCox$sctest[3], digits = 3)
   plot(mfit,

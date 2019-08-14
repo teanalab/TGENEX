@@ -31,6 +31,10 @@ loadlib("gsubfn",F) #to return multiple variables with list[,] need 0.7-0 or lat
 # list[a, b] <- myfun()
 
 
+
+# test ----
+loadls("plyr survival classInt", T)
+
 # NMF ----
 loadls("plyr survival lmtest", F)
 loadls("stats registry", F)

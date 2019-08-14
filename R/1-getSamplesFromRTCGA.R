@@ -3,7 +3,7 @@
 # write a csv file to be read by python for training
 
 library(RTCGA)
-checkTCGA('Dates')
+print(checkTCGA('Dates'))
 #From my gist get entrez from hugo symbol
 library(org.Hs.eg.db)
 library(dplyr)
@@ -386,27 +386,78 @@ survivalFromRTCGA <- function(disease)
 
 # # ---- main script get survival data------
 # #1- Example how to get Breast Cancer mutation data using RTCGA
-(diseases = cohorts[11:38])
+# (diseases = cohorts[11:38])
+#
+# for (i in seq_along(diseases))
+# {
+#   disease = diseases[i]
+#   dir.create(disease)
+#
+#   #get survival
+#   survivalVars <- survivalFromRTCGA(disease)
+#   row.names(survivalVars) <- survivalVars$bcr_patient_barcode
+#   survivalData <- survivalVars
+#
+#   #Plot for paper - complete example in SurvivalAnalysis.R
+#   plotName<-paste0(disease,"/OS_Kaplan-Meier.pdf")
+#   pdf( file = plotName,  onefile = TRUE, width = 9, height = 7)
+#   ## Kaplan-Meier Survival Curves
+#   kmTCGA(survivalData)
+#   dev.off()
+#
+#
+#   #write survival data object
+#   save(survivalData, file = paste0(disease, "/survival.Rd") )
+# }
 
-for (i in seq_along(diseases))
-{
-  disease = diseases[i]
-  dir.create(disease)
-
-  #get survival
-  survivalVars <- survivalFromRTCGA(disease)
-  row.names(survivalVars) <- survivalVars$bcr_patient_barcode
-  survivalData <- survivalVars
-
-  #Plot for paper - complete example in SurvivalAnalysis.R
-  plotName<-paste0(disease,"/OS_Kaplan-Meier.pdf")
-  pdf( file = plotName,  onefile = TRUE, width = 9, height = 7)
-  ## Kaplan-Meier Survival Curves
-  kmTCGA(survivalData)
-  dev.off()
 
 
-  #write survival data object
-  save(survivalData, file = paste0(disease, "/survival.Rd") )
+
+#' Title
+#'
+#' @param disease
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' load(file="cohortsMRNA.RData")
+#' disease = "BRCA"
+getOnlyTumorFromRNAandFilter <- function(disease, folder_p){
+  eval(parse(text= paste0("TCGA_DB <- ",disease,".mRNA")))
+  patients <- unique(TCGA_DB$bcr_patient_barcode)
+  sampletypes <- substr(patients, 14, 15)
+  print(table(sampletypes))
+  #https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes
+  # 01 primary tummor
+  # 06 Metastatic
+  # 11	Solid Tissue Normal
+  #remove non primary tummor samples
+  toDel = which(sampletypes != '01')
+  if (length(toDel) > 0 ){
+    TCGA_DB <- TCGA_DB[-toDel, ]
+    patients <- TCGA_DB$bcr_patient_barcode
+  }
+  patients <- substr(patients, 1, 12)
+  if( length(unique(patients)) != dim(TCGA_DB)[1])
+    stop("ERROR: length(unique(patients)) != dim(TCGA_DB)[1]")
+  TCGA_DB$bcr_patient_barcode <- patients
+  #remove NA
+  if(anyNA(TCGA_DB)){
+    nCols = dim(TCGA_DB)[2]
+    cat(sum(is.na(TCGA_DB)), " NA values found for ", disease, "\n")
+    #delete genes because patients are more valuable
+    delCols <- apply(TCGA_DB, 2, anyNA )
+    cat(sum(delCols), " genes to be deleted\n")
+    remNA = which(delCols)
+    TCGA_DB <- TCGA_DB[,-remNA]
+    cat( (nCols - dim(TCGA_DB)[2] ) , "genes were deleted", "\n")
+  }
+  if ( anyNA(TCGA_DB) ){
+    stop("ERROR: Table still have NA values for ", disease)
+  }
+  row.names(TCGA_DB) <- TCGA_DB$bcr_patient_barcode
+  TCGA_DB = TCGA_DB[, -1]
+  eval(parse(text= paste0("TCGA_DB -> ",disease,".mRNA")))
+  save(list=paste0(disease,".mRNA"), file = paste0(folder_p,disease,".RData"))
 }
-

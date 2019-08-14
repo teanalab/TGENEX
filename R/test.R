@@ -1,4 +1,4 @@
-load("~/DDfileSystem/10-Research/1-Current/CLINGEN/9source/CLIGEN/git_teana/CLIGEN/allmRNA.RData")
+load("allmRNA.RData")
 
 initialScriptBRCAonly <-function(){
   #all with BRCA olny
