@@ -96,8 +96,6 @@ for (i in seq_along(diseases))
 
 
 ######## OUTPUT
-
-#
 # Disease BRCA. Groups 749 280 69. Log p-val <2e-16PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.
 # ==> 1 page written on `kmplots/BRCA.pdf'.
 #

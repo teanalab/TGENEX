@@ -1752,221 +1752,35 @@ summary {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKFwiUi9pbnRlZ3Jfc3VidHlwaW5nLlJcIilcblxuXG4jU3RhcnQgdHJ5aW5nIHdpdGggb25lIGRpc2Vhc2VcbmZvciAoaSBpbiBzZXFfYWxvbmcoZGlzZWFzZXMpKVxue1xuICBkaXNlYXNlID0gZGlzZWFzZXNbaV1cbiAgcGxvdERlbmRvU3Vydml2YWwoZGlzZWFzZSlcbn1cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKFwiUi9pbnRlZ3Jfc3VidHlwaW5nLlJcIilcblxuZm9yIChpIGluIHNlcV9hbG9uZyhkaXNlYXNlcykpXG57XG4gIGRpc2Vhc2UgPSBkaXNlYXNlc1tpXVxuICBwbG90RGVuZG9TdXJ2aXZhbChkaXNlYXNlKVxufVxuXG5gYGAifQ== -->
 <pre class="r"><code>source(&quot;R/integr_subtyping.R&quot;)
 
-
-#Start trying with one disease
 for (i in seq_along(diseases))
 {
   disease = diseases[i]
   plotDendoSurvival(disease)
-}</code></pre>
+}
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIEJSQ0EgTnVtYmVyIG9mIGdlbmVzIDE3MzI3IE51bWJlciBvZiBwYXRpZW50cyA1MjYgXG5cbiAgMSAgIDIgICAzIFxuNDQ1ICAgMiAgNzkgXG5FUlJPUjogb25lIG9yIG1vcmUgZ3JvdXBzIGFyZSBzbWFsbGVyIHRoYW4gdGhlIHRyZXNob2xkIG9mICA0IGFkanVzdGluZyBrIGZyb20gMyB0byAyIEZPUiBkaXNlYXNlIEJSQ0FcbiAgMSAgIDIgXG40NDUgIDgxIFxuXG4gUGVyZm9ybWluZyBzdXJ2aXZhbCBhbmFseXNpcyBmb3IgIEJSQ0EuIENveCBMb2cgcC12YWwgPSAgMC42ODdQREZDUk9QIDEuMzgsIDIwMTIvMTEvMDIgLSBDb3B5cmlnaHQgKGMpIDIwMDItMjAxMiBieSBIZWlrbyBPYmVyZGllay5cbiJ9 -->
-<pre><code>For BRCA Number of genes 17327 Number of patients 526 
-
-  1   2   3 
-445   2  79 
-ERROR: one or more groups are smaller than the treshold of  4 adjusting k from 3 to 2 FOR disease BRCA
-  1   2 
-445  81 
-
- Performing survival analysis for  BRCA. Cox Log p-val =  0.687PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIENPQUQgTnVtYmVyIG9mIGdlbmVzIDE3NTU4IE51bWJlciBvZiBwYXRpZW50cyAxNTIgXG5cbiAgMSAgIDIgICAzIFxuIDI5IDEyMiAgIDEgXG5FUlJPUjogb25lIG9yIG1vcmUgZ3JvdXBzIGFyZSBzbWFsbGVyIHRoYW4gdGhlIHRyZXNob2xkIG9mICA0IGFkanVzdGluZyBrIGZyb20gMyB0byAyIEZPUiBkaXNlYXNlIENPQURcbiAgMSAgIDIgXG4gMjkgMTIzIFxuXG4gUGVyZm9ybWluZyBzdXJ2aXZhbCBhbmFseXNpcyBmb3IgIENPQUQuIENveCBMb2cgcC12YWwgPSAgMC4wOFBERkNST1AgMS4zOCwgMjAxMi8xMS8wMiAtIENvcHlyaWdodCAoYykgMjAwMi0yMDEyIGJ5IEhlaWtvIE9iZXJkaWVrLlxuIn0= -->
-<pre><code>For COAD Number of genes 17558 Number of patients 152 
-
-  1   2   3 
- 29 122   1 
-ERROR: one or more groups are smaller than the treshold of  4 adjusting k from 3 to 2 FOR disease COAD
-  1   2 
- 29 123 
-
- Performing survival analysis for  COAD. Cox Log p-val =  0.08PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIENPQURSRUFEIE51bWJlciBvZiBnZW5lcyAxNzUyMSBOdW1iZXIgb2YgcGF0aWVudHMgMjIxIFxuXG4gIDEgICAyICAgMyBcbiAzNSAxODMgICAzIFxuRVJST1I6IG9uZSBvciBtb3JlIGdyb3VwcyBhcmUgc21hbGxlciB0aGFuIHRoZSB0cmVzaG9sZCBvZiAgNCBhZGp1c3RpbmcgayBmcm9tIDMgdG8gMiBGT1IgZGlzZWFzZSBDT0FEUkVBRFxuICAxICAgMiBcbiAzNSAxODYgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgQ09BRFJFQUQuIENveCBMb2cgcC12YWwgPSAgMC4zMjhQREZDUk9QIDEuMzgsIDIwMTIvMTEvMDIgLSBDb3B5cmlnaHQgKGMpIDIwMDItMjAxMiBieSBIZWlrbyBPYmVyZGllay5cbiJ9 -->
-<pre><code>For COADREAD Number of genes 17521 Number of patients 221 
-
-  1   2   3 
- 35 183   3 
-ERROR: one or more groups are smaller than the treshold of  4 adjusting k from 3 to 2 FOR disease COADREAD
-  1   2 
- 35 186 
-
- Performing survival analysis for  COADREAD. Cox Log p-val =  0.328PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIEdCTUxHRyBOdW1iZXIgb2YgZ2VuZXMgMTc2NjMgTnVtYmVyIG9mIHBhdGllbnRzIDI3IFxuXG4gMSAgMiAgMyBcbjExICAzIDEzIFxuRVJST1I6IG9uZSBvciBtb3JlIGdyb3VwcyBhcmUgc21hbGxlciB0aGFuIHRoZSB0cmVzaG9sZCBvZiAgNCBhZGp1c3RpbmcgayBmcm9tIDMgdG8gMiBGT1IgZGlzZWFzZSBHQk1MR0dcbiAxICAyIFxuMjQgIDMgXG5FUlJPUiBBRlRFUiBBREpVU1RNRU5UOiBvbmUgb3IgbW9yZSBncm91cHMgYXJlIHNtYWxsZXIgdGhhbiB0aGUgdHJlc2hvbGQgb2YgIDQgd2l0aCBrID0gIDIgRk9SIGRpc2Vhc2UgR0JNTEdHIFJFTU9WSU5HIFNNQUxMRVIgR1JPVVBcbiAxICAyICAzIFxuMTEgIDMgMTMgXG5cbiAxICAzIFxuMTEgMTMgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgR0JNTEdHLiBDb3ggTG9nIHAtdmFsID0gIDAuMTgxUERGQ1JPUCAxLjM4LCAyMDEyLzExLzAyIC0gQ29weXJpZ2h0IChjKSAyMDAyLTIwMTIgYnkgSGVpa28gT2JlcmRpZWsuXG4ifQ== -->
-<pre><code>For GBMLGG Number of genes 17663 Number of patients 27 
-
- 1  2  3 
-11  3 13 
-ERROR: one or more groups are smaller than the treshold of  4 adjusting k from 3 to 2 FOR disease GBMLGG
- 1  2 
-24  3 
-ERROR AFTER ADJUSTMENT: one or more groups are smaller than the treshold of  4 with k =  2 FOR disease GBMLGG REMOVING SMALLER GROUP
- 1  2  3 
-11  3 13 
-
- 1  3 
-11 13 
-
- Performing survival analysis for  GBMLGG. Cox Log p-val =  0.181PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIEtJUEFOIE51bWJlciBvZiBnZW5lcyAxNzI2MCBOdW1iZXIgb2YgcGF0aWVudHMgODggXG5cbiAxICAyICAzIFxuNTcgMjEgMTAgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgS0lQQU4uIENveCBMb2cgcC12YWwgPSAgMC4xMzdQREZDUk9QIDEuMzgsIDIwMTIvMTEvMDIgLSBDb3B5cmlnaHQgKGMpIDIwMDItMjAxMiBieSBIZWlrbyBPYmVyZGllay5cbiJ9 -->
-<pre><code>For KIPAN Number of genes 17260 Number of patients 88 
-
- 1  2  3 
-57 21 10 
-
- Performing survival analysis for  KIPAN. Cox Log p-val =  0.137PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIEtJUkMgTnVtYmVyIG9mIGdlbmVzIDE3NTIyIE51bWJlciBvZiBwYXRpZW50cyA3MiBcblxuIDEgIDIgIDMgXG41NyAgNSAxMCBcblxuIFBlcmZvcm1pbmcgc3Vydml2YWwgYW5hbHlzaXMgZm9yICBLSVJDLiBDb3ggTG9nIHAtdmFsID0gIDAuMDI0N1BERkNST1AgMS4zOCwgMjAxMi8xMS8wMiAtIENvcHlyaWdodCAoYykgMjAwMi0yMDEyIGJ5IEhlaWtvIE9iZXJkaWVrLlxuIn0= -->
-<pre><code>For KIRC Number of genes 17522 Number of patients 72 
-
- 1  2  3 
-57  5 10 
-
- Performing survival analysis for  KIRC. Cox Log p-val =  0.0247PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIExHRyBOdW1iZXIgb2YgZ2VuZXMgMTc2NjMgTnVtYmVyIG9mIHBhdGllbnRzIDI3IFxuXG4gMSAgMiAgMyBcbjExICAzIDEzIFxuRVJST1I6IG9uZSBvciBtb3JlIGdyb3VwcyBhcmUgc21hbGxlciB0aGFuIHRoZSB0cmVzaG9sZCBvZiAgNCBhZGp1c3RpbmcgayBmcm9tIDMgdG8gMiBGT1IgZGlzZWFzZSBMR0dcbiAxICAyIFxuMjQgIDMgXG5FUlJPUiBBRlRFUiBBREpVU1RNRU5UOiBvbmUgb3IgbW9yZSBncm91cHMgYXJlIHNtYWxsZXIgdGhhbiB0aGUgdHJlc2hvbGQgb2YgIDQgd2l0aCBrID0gIDIgRk9SIGRpc2Vhc2UgTEdHIFJFTU9WSU5HIFNNQUxMRVIgR1JPVVBcbiAxICAyICAzIFxuMTEgIDMgMTMgXG5cbiAxICAzIFxuMTEgMTMgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgTEdHLiBDb3ggTG9nIHAtdmFsID0gIDAuMTgxUERGQ1JPUCAxLjM4LCAyMDEyLzExLzAyIC0gQ29weXJpZ2h0IChjKSAyMDAyLTIwMTIgYnkgSGVpa28gT2JlcmRpZWsuXG4ifQ== -->
-<pre><code>For LGG Number of genes 17663 Number of patients 27 
-
- 1  2  3 
-11  3 13 
-ERROR: one or more groups are smaller than the treshold of  4 adjusting k from 3 to 2 FOR disease LGG
- 1  2 
-24  3 
-ERROR AFTER ADJUSTMENT: one or more groups are smaller than the treshold of  4 with k =  2 FOR disease LGG REMOVING SMALLER GROUP
- 1  2  3 
-11  3 13 
-
- 1  3 
-11 13 
-
- Performing survival analysis for  LGG. Cox Log p-val =  0.181PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIExVQUQgTnVtYmVyIG9mIGdlbmVzIDE3Mzk2IE51bWJlciBvZiBwYXRpZW50cyAzMiBcblxuIDEgIDIgIDMgXG4yNyAgNCAgMSBcbkVSUk9SOiBvbmUgb3IgbW9yZSBncm91cHMgYXJlIHNtYWxsZXIgdGhhbiB0aGUgdHJlc2hvbGQgb2YgIDQgYWRqdXN0aW5nIGsgZnJvbSAzIHRvIDIgRk9SIGRpc2Vhc2UgTFVBRFxuIDEgIDIgXG4yNyAgNSBcblxuIFBlcmZvcm1pbmcgc3Vydml2YWwgYW5hbHlzaXMgZm9yICBMVUFELiBDb3ggTG9nIHAtdmFsID0gIDAuNzQzUERGQ1JPUCAxLjM4LCAyMDEyLzExLzAyIC0gQ29weXJpZ2h0IChjKSAyMDAyLTIwMTIgYnkgSGVpa28gT2JlcmRpZWsuXG4ifQ== -->
-<pre><code>For LUAD Number of genes 17396 Number of patients 32 
-
- 1  2  3 
-27  4  1 
-ERROR: one or more groups are smaller than the treshold of  4 adjusting k from 3 to 2 FOR disease LUAD
- 1  2 
-27  5 
-
- Performing survival analysis for  LUAD. Cox Log p-val =  0.743PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIExVU0MgTnVtYmVyIG9mIGdlbmVzIDE3NTEwIE51bWJlciBvZiBwYXRpZW50cyAxNTIgXG5cbiAgMSAgIDIgICAzIFxuIDIyIDEyMSAgIDkgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgTFVTQy4gQ294IExvZyBwLXZhbCA9ICAwLjY0N1BERkNST1AgMS4zOCwgMjAxMi8xMS8wMiAtIENvcHlyaWdodCAoYykgMjAwMi0yMDEyIGJ5IEhlaWtvIE9iZXJkaWVrLlxuIn0= -->
-<pre><code>For LUSC Number of genes 17510 Number of patients 152 
-
-  1   2   3 
- 22 121   9 
-
- Performing survival analysis for  LUSC. Cox Log p-val =  0.647PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIE9WIE51bWJlciBvZiBnZW5lcyAxNzQ2NyBOdW1iZXIgb2YgcGF0aWVudHMgNTI5IFxuXG4gIDEgICAyICAgMyBcbjUyMCAgIDEgICA4IFxuRVJST1I6IG9uZSBvciBtb3JlIGdyb3VwcyBhcmUgc21hbGxlciB0aGFuIHRoZSB0cmVzaG9sZCBvZiAgNCBhZGp1c3RpbmcgayBmcm9tIDMgdG8gMiBGT1IgZGlzZWFzZSBPVlxuICAxICAgMiBcbjUyOCAgIDEgXG5FUlJPUiBBRlRFUiBBREpVU1RNRU5UOiBvbmUgb3IgbW9yZSBncm91cHMgYXJlIHNtYWxsZXIgdGhhbiB0aGUgdHJlc2hvbGQgb2YgIDQgd2l0aCBrID0gIDIgRk9SIGRpc2Vhc2UgT1YgUkVNT1ZJTkcgU01BTExFUiBHUk9VUFxuICAxICAgMiAgIDMgXG41MjAgICAxICAgOCBcblxuICAxICAgMyBcbjUyMCAgIDggXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgT1YuIENveCBMb2cgcC12YWwgPSAgMC4wMTIxUERGQ1JPUCAxLjM4LCAyMDEyLzExLzAyIC0gQ29weXJpZ2h0IChjKSAyMDAyLTIwMTIgYnkgSGVpa28gT2JlcmRpZWsuXG4ifQ== -->
-<pre><code>For OV Number of genes 17467 Number of patients 529 
-
-  1   2   3 
-520   1   8 
-ERROR: one or more groups are smaller than the treshold of  4 adjusting k from 3 to 2 FOR disease OV
-  1   2 
-528   1 
-ERROR AFTER ADJUSTMENT: one or more groups are smaller than the treshold of  4 with k =  2 FOR disease OV REMOVING SMALLER GROUP
-  1   2   3 
-520   1   8 
-
-  1   3 
-520   8 
-
- Performing survival analysis for  OV. Cox Log p-val =  0.0121PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIFJFQUQgTnVtYmVyIG9mIGdlbmVzIDE3NzMwIE51bWJlciBvZiBwYXRpZW50cyA2OSBcblxuIDEgIDIgIDMgXG40NyAyMSAgMSBcbkVSUk9SOiBvbmUgb3IgbW9yZSBncm91cHMgYXJlIHNtYWxsZXIgdGhhbiB0aGUgdHJlc2hvbGQgb2YgIDQgYWRqdXN0aW5nIGsgZnJvbSAzIHRvIDIgRk9SIGRpc2Vhc2UgUkVBRFxuIDEgIDIgXG40NyAyMiBcblxuIFBlcmZvcm1pbmcgc3Vydml2YWwgYW5hbHlzaXMgZm9yICBSRUFELiBDb3ggTG9nIHAtdmFsID0gIDAuODk0UERGQ1JPUCAxLjM4LCAyMDEyLzExLzAyIC0gQ29weXJpZ2h0IChjKSAyMDAyLTIwMTIgYnkgSGVpa28gT2JlcmRpZWsuXG4ifQ== -->
-<pre><code>For READ Number of genes 17730 Number of patients 69 
-
- 1  2  3 
-47 21  1 
-ERROR: one or more groups are smaller than the treshold of  4 adjusting k from 3 to 2 FOR disease READ
- 1  2 
-47 22 
-
- Performing survival analysis for  READ. Cox Log p-val =  0.894PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIFVDRUMgTnVtYmVyIG9mIGdlbmVzIDE3NDM3IE51bWJlciBvZiBwYXRpZW50cyA1NCBcblxuIDEgIDIgIDMgXG4zNyAxNSAgMiBcbkVSUk9SOiBvbmUgb3IgbW9yZSBncm91cHMgYXJlIHNtYWxsZXIgdGhhbiB0aGUgdHJlc2hvbGQgb2YgIDQgYWRqdXN0aW5nIGsgZnJvbSAzIHRvIDIgRk9SIGRpc2Vhc2UgVUNFQ1xuIDEgIDIgXG4zOSAxNSBcblxuIFBlcmZvcm1pbmcgc3Vydml2YWwgYW5hbHlzaXMgZm9yICBVQ0VDLiBDb3ggTG9nIHAtdmFsID0gIDAuNDEzUERGQ1JPUCAxLjM4LCAyMDEyLzExLzAyIC0gQ29weXJpZ2h0IChjKSAyMDAyLTIwMTIgYnkgSGVpa28gT2JlcmRpZWsuXG4ifQ== -->
-<pre><code>For UCEC Number of genes 17437 Number of patients 54 
-
- 1  2  3 
-37 15  2 
-ERROR: one or more groups are smaller than the treshold of  4 adjusting k from 3 to 2 FOR disease UCEC
- 1  2 
-39 15 
-
- Performing survival analysis for  UCEC. Cox Log p-val =  0.413PDFCROP 1.38, 2012/11/02 - Copyright (c) 2002-2012 by Heiko Oberdiek.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiISEhIEVycm9yOiBHaG9zdHNjcmlwdCBleGl0ZWQgd2l0aCBlcnJvciBjb2RlIDEyNyFcbiJ9 -->
-<pre><code>!!! Error: Ghostscript exited with error code 127!</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Now generate integrated clusters</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc291cmNlKFwiUi9pbnRlZ3Jfc3VidHlwaW5nLlJcIilcblxuZm9yIChpIGluIHNlcV9hbG9uZyhkaXNlYXNlcykpXG57XG4gIGRpc2Vhc2UgPSBkaXNlYXNlc1tpXVxuICBwbG90SW50ZWdyYVN1cnZpdmFsKGRpc2Vhc2UpXG59XG5gYGAifQ== -->
-<pre class="r"><code>source(&quot;R/integr_subtyping.R&quot;)
-
-for (i in seq_along(diseases))
-{
-  disease = diseases[i]
-  plotIntegraSurvival(disease)
-}</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuc291cmNlKFxcUi9pbnRlZ3Jfc3VidHlwaW5nLlJcXClcblxuZm9yIChpIGluIHNlcV9hbG9uZyhkaXNlYXNlcykpXG57XG4gIGRpc2Vhc2UgPSBkaXNlYXNlc1tpXVxuICBwbG90SW50ZWdyYVN1cnZpdmFsKGRpc2Vhc2UpXG59XG5gYGBcbmBgYCJ9 -->
+<p><code>r</code>r source(/integr_subtyping.R)</p>
+<p>for (i in seq_along(diseases)) { disease = diseases[i] plotIntegraSurvival(disease) }</p>
+<pre><code></code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRm9yIEJSQ0EgXG5cbiAgMSAgIDIgICAzIFxuMzYxIDEzOSAgMjYgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgQlJDQVxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiRm9yIEJSQ0EgXG5cbiAgMSAgIDIgICAzIFxuMzYxIDEzOSAgMjYgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgQlJDQVxuTG9nbGlrIGNvbnZlcmdlZCBiZWZvcmUgdmFyaWFibGUgIDIgOyBjb2VmZmljaWVudCBtYXkgYmUgaW5maW5pdGUuIFxuLiBDb3ggTG9nIHAtdmFsID0gIDEuMzZlLTEwRm9yIENPQUQgXG5cbiAgMSAgIDIgICAzIFxuMTE5ICAyNSAgIDggXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgQ09BRC4gQ294IExvZyBwLXZhbCA9ICAwLjA0NjlGb3IgQ09BRFJFQUQgXG5cbiAgMSAgIDIgICAzIFxuMTY3ICA1MyAgIDEgXG5FUlJPUjogb25lIG9yIG1vcmUgZ3JvdXBzIGFyZSBzbWFsbGVyIHRoYW4gdGhlIHRyZXNob2xkIG9mICA0IGFkanVzdGluZyBrIGZyb20gMyB0byAyIEZPUiBkaXNlYXNlIENPQURSRUFEIFJFTU9WSU5HIFNNQUxMRVIgR1JPVVBcbiAgMSAgIDIgXG4xNjcgIDUzIFxuXG4gUGVyZm9ybWluZyBzdXJ2aXZhbCBhbmFseXNpcyBmb3IgIENPQURSRUFELiBDb3ggTG9nIHAtdmFsID0gIDAuMDIzOUZvciBHQk1MR0cgXG5cbiAxICAyICAzIFxuMTAgIDkgIDUgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgR0JNTEdHLiBDb3ggTG9nIHAtdmFsID0gIDAuMTgyRm9yIEtJUEFOIFxuXG4gMSAgMiAgMyBcbjQ4IDI5IDExIFxuXG4gUGVyZm9ybWluZyBzdXJ2aXZhbCBhbmFseXNpcyBmb3IgIEtJUEFOLiBDb3ggTG9nIHAtdmFsID0gIDAuMDAwODM0Rm9yIEtJUkMgXG5cbiAxICAyICAzIFxuMzggMjMgMTEgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgS0lSQy4gQ294IExvZyBwLXZhbCA9ICAwLjAwMDI2MkZvciBMR0cgXG5cbiAxICAyICAzIFxuMTAgIDkgIDUgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgTEdHLiBDb3ggTG9nIHAtdmFsID0gIDAuMTgyRm9yIExVQUQgXG5cbiAxICAyICAzIFxuMTYgMTAgIDYgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgTFVBRC4gQ294IExvZyBwLXZhbCA9ICAwLjEwM0ZvciBMVVNDIFxuXG4gMSAgMiAgMyBcbjg5IDUxIDEyIFxuXG4gUGVyZm9ybWluZyBzdXJ2aXZhbCBhbmFseXNpcyBmb3IgIExVU0MuIENveCBMb2cgcC12YWwgPSAgMS4zOWUtMDdGb3IgT1YgXG5cbiAgMSAgIDIgICAzIFxuMjk5IDE2NyAgNjIgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgT1YuIENveCBMb2cgcC12YWwgPSAgMC4wMDE5Rm9yIFJFQUQgXG5cbiAxICAyICAzIFxuNTcgMTAgIDIgXG5FUlJPUjogb25lIG9yIG1vcmUgZ3JvdXBzIGFyZSBzbWFsbGVyIHRoYW4gdGhlIHRyZXNob2xkIG9mICA0IGFkanVzdGluZyBrIGZyb20gMyB0byAyIEZPUiBkaXNlYXNlIFJFQUQgUkVNT1ZJTkcgU01BTExFUiBHUk9VUFxuIDEgIDIgXG41NyAxMCBcblxuIFBlcmZvcm1pbmcgc3Vydml2YWwgYW5hbHlzaXMgZm9yICBSRUFELiBDb3ggTG9nIHAtdmFsID0gIDAuMTAyRm9yIFVDRUMgXG5cbiAxICAyICAzIFxuMjYgMjMgIDUgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgVUNFQy4gQ294IExvZyBwLXZhbCA9ICAwLjEwNFxuIn0= -->
 <pre><code>For BRCA 
 
   1   2   3 
 361 139  26 
 
- Performing survival analysis for  BRCA</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9nbGlrIGNvbnZlcmdlZCBiZWZvcmUgdmFyaWFibGUgIDIgOyBjb2VmZmljaWVudCBtYXkgYmUgaW5maW5pdGUuIFxuIn0= -->
-<pre><code>Loglik converged before variable  2 ; coefficient may be infinite. </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLiBDb3ggTG9nIHAtdmFsID0gIDEuMzZlLTEwRm9yIENPQUQgXG5cbiAgMSAgIDIgICAzIFxuMTE5ICAyNSAgIDggXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgQ09BRC4gQ294IExvZyBwLXZhbCA9ICAwLjA0NjlGb3IgQ09BRFJFQUQgXG5cbiAgMSAgIDIgICAzIFxuMTY3ICA1MyAgIDEgXG5FUlJPUjogb25lIG9yIG1vcmUgZ3JvdXBzIGFyZSBzbWFsbGVyIHRoYW4gdGhlIHRyZXNob2xkIG9mICA0IGFkanVzdGluZyBrIGZyb20gMyB0byAyIEZPUiBkaXNlYXNlIENPQURSRUFEIFJFTU9WSU5HIFNNQUxMRVIgR1JPVVBcbiAgMSAgIDIgXG4xNjcgIDUzIFxuXG4gUGVyZm9ybWluZyBzdXJ2aXZhbCBhbmFseXNpcyBmb3IgIENPQURSRUFELiBDb3ggTG9nIHAtdmFsID0gIDAuMDIzOUZvciBHQk1MR0cgXG5cbiAxICAyICAzIFxuMTAgIDkgIDUgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgR0JNTEdHLiBDb3ggTG9nIHAtdmFsID0gIDAuMTgyRm9yIEtJUEFOIFxuXG4gMSAgMiAgMyBcbjQ4IDI5IDExIFxuXG4gUGVyZm9ybWluZyBzdXJ2aXZhbCBhbmFseXNpcyBmb3IgIEtJUEFOLiBDb3ggTG9nIHAtdmFsID0gIDAuMDAwODM0Rm9yIEtJUkMgXG5cbiAxICAyICAzIFxuMzggMjMgMTEgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgS0lSQy4gQ294IExvZyBwLXZhbCA9ICAwLjAwMDI2MkZvciBMR0cgXG5cbiAxICAyICAzIFxuMTAgIDkgIDUgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgTEdHLiBDb3ggTG9nIHAtdmFsID0gIDAuMTgyRm9yIExVQUQgXG5cbiAxICAyICAzIFxuMTYgMTAgIDYgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgTFVBRC4gQ294IExvZyBwLXZhbCA9ICAwLjEwM0ZvciBMVVNDIFxuXG4gMSAgMiAgMyBcbjg5IDUxIDEyIFxuXG4gUGVyZm9ybWluZyBzdXJ2aXZhbCBhbmFseXNpcyBmb3IgIExVU0MuIENveCBMb2cgcC12YWwgPSAgMS4zOWUtMDdGb3IgT1YgXG5cbiAgMSAgIDIgICAzIFxuMjk5IDE2NyAgNjIgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgT1YuIENveCBMb2cgcC12YWwgPSAgMC4wMDE5Rm9yIFJFQUQgXG5cbiAxICAyICAzIFxuNTcgMTAgIDIgXG5FUlJPUjogb25lIG9yIG1vcmUgZ3JvdXBzIGFyZSBzbWFsbGVyIHRoYW4gdGhlIHRyZXNob2xkIG9mICA0IGFkanVzdGluZyBrIGZyb20gMyB0byAyIEZPUiBkaXNlYXNlIFJFQUQgUkVNT1ZJTkcgU01BTExFUiBHUk9VUFxuIDEgIDIgXG41NyAxMCBcblxuIFBlcmZvcm1pbmcgc3Vydml2YWwgYW5hbHlzaXMgZm9yICBSRUFELiBDb3ggTG9nIHAtdmFsID0gIDAuMTAyRm9yIFVDRUMgXG5cbiAxICAyICAzIFxuMjYgMjMgIDUgXG5cbiBQZXJmb3JtaW5nIHN1cnZpdmFsIGFuYWx5c2lzIGZvciAgVUNFQy4gQ294IExvZyBwLXZhbCA9ICAwLjEwNFxuIn0= -->
-<pre><code>. Cox Log p-val =  1.36e-10For COAD 
+ Performing survival analysis for  BRCA
+Loglik converged before variable  2 ; coefficient may be infinite. 
+. Cox Log p-val =  1.36e-10For COAD 
 
   1   2   3 
 119  25   8 

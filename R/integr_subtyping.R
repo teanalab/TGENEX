@@ -197,6 +197,20 @@ plotIntegraSurvival <- function(disease, outFolder = "kmplots_f/", outFolderSurv
   #system(paste("pdfcrop", fileName, fileName))
 
 
+  fileName = paste0(outFolder,disease,"_bl.pdf")
+  #Plot for paper
+  pdf( file = fileName,  onefile = TRUE, width = 9, height = 7)
+  plot.Survival4paper(coxFit, mfit, location = "bottomleft",
+                      colorsP = c25[1:k],
+                      colorsL = c25[1:k],
+                      labelClu = paste("subtype ", seq(k), " (", tr, ")", sep='') ,
+                      font_size_times = 1.8, legendbg = "gray98")
+  dev.off()
+
+  #crop borders to fit paper
+  #system(paste("pdfcrop", fileName, fileName))
+
+
   save(survivalData, file = paste0(outFolder,disease,"_survival.RData"))
 
 

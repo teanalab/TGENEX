@@ -10,7 +10,7 @@ load(file="../cohortsMRNA.RData")
 source("1-getSamplesFromRTCGA.R")
 
 diseases = c("BRCA", "COAD" ,"COADREAD", "GBMLGG", "KIPAN", "KIRC", "LGG", "LUAD",
-             "LUSC", "OV", "READ", "UCEC")
+             "LUSC", "OV", "READ", "UCEC", "KIRP")
 folderN = "clean_mRNA"
 #dir.create(folderN)
 
