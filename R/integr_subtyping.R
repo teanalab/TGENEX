@@ -123,20 +123,6 @@ plotIntegraSurvival <- function(disease, outFolder = "kmplots_f/", outFolderSurv
   #load survival
   load(paste0(outFolderSurv,disease,"_survival.RData"))
 
-  set.seed(124)
-  alpha <- runif(dim(s_dendo)[1], 0, 1)
-  pChange <- 0.8
-
-  for (i in seq_along(row.names(s_dendo))){
-    if(s_dendo$group[i] != survivalData$group[i]){
-      if( alpha[i] < pChange ){
-        s_dendo$group[i] = survivalData$group[i]
-      }
-    }
-  }
-
-  survivalData <- s_dendo
-
   cat( "For", disease, "\n")
 
   distSurvGroups <- table(survivalData$group)

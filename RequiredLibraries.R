@@ -19,7 +19,7 @@ loadMyLib <- function(){
   #rm(list=ls()[-which(ls() %in% c("patients", "mutation", "clinicalLong"))])
   rm(list=ls()[which(ls() %in% c("libs"))])
 
-  save.image("data/loadls.RData")
+  #save.image("data/loadls.RData")
 }
 
 loadlib("reporttools")
