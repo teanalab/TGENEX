@@ -115,33 +115,7 @@ plotDendoSurvival <- function(disease, outFolder = "kmplots_from_dendo/"){
 
 
 
-plotIntegraSurvival <- function(disease, outFolder = "kmplots_f/", outFolderSurv = "kmplots/", outFolderDendo = "kmplots_from_dendo/"){
-  #load survival dendo
-  load(paste0(outFolderDendo,disease,"_survival.RData"))
-  s_dendo <- survivalData
-
-  #load survival
-  load(paste0(outFolderSurv,disease,"_survival.RData"))
-
-  cat( "For", disease, "\n")
-
-  distSurvGroups <- table(survivalData$group)
-  print(distSurvGroups)
-
-  if (any(distSurvGroups < minimumGroupSize)){
-    cat("ERROR: one or more groups are smaller than the treshold of ",
-        minimumGroupSize, "adjusting k from", k, "to", k-1, "FOR disease", disease, "REMOVING SMALLER GROUP")
-
-    smallerGNr <- which(distSurvGroups < minimumGroupSize)
-    survivalData <- survivalData[-which(survivalData$group == smallerGNr),]
-    distSurvGroups <- table(survivalData$group)
-    print(distSurvGroups)
-    if ( any(distSurvGroups < minimumGroupSize) ){
-      stop(paste("ERROR AFTER ADJUSTMENT: one or more groups are smaller than the treshold of ",
-                 minimumGroupSize, "with k as shown in table FOR disease", disease))
-    }
-  }
-
+plotIntegraSurvival <- function(distSurvGroups, disease, outFolder = "kmplots_f/", outFolderSurv = "kmplots/", outFolderDendo = "kmplots_from_dendo/"){
   # survival analysis
   cat("\n Performing survival analysis for ", disease)
   # components
